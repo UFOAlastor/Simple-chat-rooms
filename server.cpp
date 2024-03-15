@@ -1,231 +1,211 @@
-//#include"pch.h"//Ô¤±àÒëÍ·
-#include<iostream>
-#include<Winsock2.h>//socketÍ·ÎÄ¼ş
-#include<cstring>
+#include <iostream>
+#include <Winsock2.h> //socketå¤´æ–‡ä»¶
+#include <cstring>
 
 using namespace std;
 
-//ÔØÈëÏµÍ³Ìá¹©µÄsocket¶¯Ì¬Á´½Ó¿â
+#pragma comment(lib, "ws2_32.lib") // socketåº“
 
-#pragma comment(lib,"ws2_32.lib")   //socket¿â
+//==============================å…¨å±€å˜é‡åŒº===================================
+const int BUFFER_SIZE = 1024;      // ç¼“å†²åŒºå¤§å°
+int RECV_TIMEOUT = 10;             // æ¥æ”¶æ¶ˆæ¯è¶…æ—¶
+int SEND_TIMEOUT = 10;             // å‘é€æ¶ˆæ¯è¶…æ—¶
+const int WAIT_TIME = 10;          // æ¯ä¸ªå®¢æˆ·ç«¯ç­‰å¾…äº‹ä»¶çš„æ—¶é—´ï¼Œå•ä½æ¯«ç§’
+const int MAX_LINK_NUM = 10;       // æœåŠ¡ç«¯æœ€å¤§é“¾æ¥æ•°
+SOCKET cliSock[MAX_LINK_NUM];      // å®¢æˆ·ç«¯å¥—æ¥å­— 0å·ä¸ºæœåŠ¡ç«¯
+SOCKADDR_IN cliAddr[MAX_LINK_NUM]; // å®¢æˆ·ç«¯åœ°å€
+WSAEVENT cliEvent[MAX_LINK_NUM];   // å®¢æˆ·ç«¯äº‹ä»¶ 0å·ä¸ºæœåŠ¡ç«¯,å®ƒç”¨äºè®©ç¨‹åºçš„ä¸€éƒ¨åˆ†ç­‰å¾…æ¥è‡ªå¦ä¸€éƒ¨åˆ†çš„ä¿¡å·ã€‚ä¾‹å¦‚ï¼Œå½“æ•°æ®ä»å¥—æ¥å­—å˜ä¸ºå¯ç”¨æ—¶ï¼Œwinsock åº“ä¼šå°†äº‹ä»¶è®¾ç½®ä¸ºä¿¡å·çŠ¶æ€
+int total = 0;                     // å½“å‰å·²ç»é“¾æ¥çš„å®¢æœç«¯æœåŠ¡æ•°
 
-//==============================È«¾Ö±äÁ¿Çø===================================
-const int BUFFER_SIZE = 1024;//»º³åÇø´óĞ¡
-int RECV_TIMEOUT = 10;//½ÓÊÕÏûÏ¢³¬Ê±
-int SEND_TIMEOUT = 10;//·¢ËÍÏûÏ¢³¬Ê±
-const int WAIT_TIME = 10;//Ã¿¸ö¿Í»§¶ËµÈ´ıÊÂ¼şµÄÊ±¼ä£¬µ¥Î»ºÁÃë
-const int MAX_LINK_NUM = 10;//·şÎñ¶Ë×î´óÁ´½ÓÊı
-SOCKET cliSock[MAX_LINK_NUM];//¿Í»§¶ËÌ×½Ó×Ö 0ºÅÎª·şÎñ¶Ë
-SOCKADDR_IN cliAddr[MAX_LINK_NUM];//¿Í»§¶ËµØÖ·
-WSAEVENT cliEvent[MAX_LINK_NUM];//¿Í»§¶ËÊÂ¼ş 0ºÅÎª·şÎñ¶Ë,ËüÓÃÓÚÈÃ³ÌĞòµÄÒ»²¿·ÖµÈ´ıÀ´×ÔÁíÒ»²¿·ÖµÄĞÅºÅ¡£ÀıÈç£¬µ±Êı¾İ´ÓÌ×½Ó×Ö±äÎª¿ÉÓÃÊ±£¬winsock ¿â»á½«ÊÂ¼şÉèÖÃÎªĞÅºÅ×´Ì¬
-int total = 0;//µ±Ç°ÒÑ¾­Á´½ÓµÄ¿Í·ş¶Ë·şÎñÊı
-
-
-//==============================º¯ÊıÉùÃ÷===================================
-DWORD WINAPI servEventThread(LPVOID IpParameter);//·şÎñÆ÷¶Ë´¦ÀíÏß³Ì
-
-
-
-
+//==============================å‡½æ•°å£°æ˜===================================
+DWORD WINAPI servEventThread(LPVOID IpParameter); // æœåŠ¡å™¨ç«¯å¤„ç†çº¿ç¨‹
 
 int main()
 {
-	//1¡¢³õÊ¼»¯socket¿â
-	WSADATA wsaData;//»ñÈ¡°æ±¾ĞÅÏ¢£¬ËµÃ÷ÒªÊ¹ÓÃµÄ°æ±¾
-	WSAStartup(MAKEWORD(2, 2), &wsaData);//MAKEWORD(Ö÷°æ±¾ºÅ, ¸±°æ±¾ºÅ)
+    // 1ã€åˆå§‹åŒ–socketåº“
+    WSADATA wsaData;                      // è·å–ç‰ˆæœ¬ä¿¡æ¯ï¼Œè¯´æ˜è¦ä½¿ç”¨çš„ç‰ˆæœ¬
+    WSAStartup(MAKEWORD(2, 2), &wsaData); // MAKEWORD(ä¸»ç‰ˆæœ¬å·, å‰¯ç‰ˆæœ¬å·)
 
-	//2¡¢´´½¨socket
-	SOCKET servSock = socket(AF_INET, SOCK_STREAM, 0);//ÃæÏòÍøÂ·µÄÁ÷Ê½Ì×½Ó×Ö
+    // 2ã€åˆ›å»ºsocket
+    SOCKET servSock = socket(AF_INET, SOCK_STREAM, 0); // é¢å‘ç½‘è·¯çš„æµå¼å¥—æ¥å­—
 
-	//3¡¢½«·şÎñÆ÷µØÖ·´ò°üÔÚÒ»¸ö½á¹¹ÌåÀïÃæ
-	SOCKADDR_IN servAddr; //sockaddr_in ÊÇinternet»·¾³ÏÂÌ×½Ó×ÖµÄµØÖ·ĞÎÊ½
-	servAddr.sin_family = AF_INET;//ºÍ·şÎñÆ÷µÄsocketÒ»Ñù£¬sin_family±íÊ¾Ğ­Òé´Ø£¬Ò»°ãÓÃAF_INET±íÊ¾TCP/IPĞ­Òé¡£
-	servAddr.sin_addr.S_un.S_addr = inet_addr("127.0.0.1");//·şÎñ¶ËµØÖ·ÉèÖÃÎª±¾µØ»Ø»·µØÖ·
-	servAddr.sin_port = htons(12345);//host to net short ¶Ë¿ÚºÅÉèÖÃÎª12345
+    // 3ã€å°†æœåŠ¡å™¨åœ°å€æ‰“åŒ…åœ¨ä¸€ä¸ªç»“æ„ä½“é‡Œé¢
+    SOCKADDR_IN servAddr;                                   // sockaddr_in æ˜¯internetç¯å¢ƒä¸‹å¥—æ¥å­—çš„åœ°å€å½¢å¼
+    servAddr.sin_family = AF_INET;                          // å’ŒæœåŠ¡å™¨çš„socketä¸€æ ·ï¼Œsin_familyè¡¨ç¤ºåè®®ç°‡ï¼Œä¸€èˆ¬ç”¨AF_INETè¡¨ç¤ºTCP/IPåè®®ã€‚
+    servAddr.sin_addr.S_un.S_addr = inet_addr("127.0.0.1"); // æœåŠ¡ç«¯åœ°å€è®¾ç½®ä¸ºæœ¬åœ°å›ç¯åœ°å€
+    servAddr.sin_port = htons(12345);                       // host to net short ç«¯å£å·è®¾ç½®ä¸º12345
 
+    // 4ã€ç»‘å®šæœåŠ¡ç«¯çš„socketå’Œæ‰“åŒ…å¥½çš„åœ°å€
+    bind(servSock, (SOCKADDR *)&servAddr, sizeof(servAddr));
 
-	//4¡¢°ó¶¨·şÎñ¶ËµÄsocketºÍ´ò°üºÃµÄµØÖ·
-	bind(servSock, (SOCKADDR*)&servAddr, sizeof(servAddr));
+    // 4.5ç»™æœåŠ¡ç«¯sokectç»‘å®šä¸€ä¸ªäº‹ä»¶å¯¹è±¡ï¼Œç”¨æ¥æ¥æ”¶å®¢æˆ·ç«¯é“¾æ¥çš„äº‹ä»¶
+    WSAEVENT servEvent = WSACreateEvent();              // åˆ›å»ºä¸€ä¸ªäººå·¥é‡è®¾ä¸ºä¼ ä¿¡çš„äº‹ä»¶å¯¹è±¡
+    WSAEventSelect(servSock, servEvent, FD_ALL_EVENTS); // ç»‘å®šäº‹ä»¶å¯¹è±¡ï¼Œå¹¶ä¸”ç›‘å¬æ‰€æœ‰äº‹ä»¶
 
-	//4.5¸ø·şÎñ¶Ësokect°ó¶¨Ò»¸öÊÂ¼ş¶ÔÏó£¬ÓÃÀ´½ÓÊÕ¿Í»§¶ËÁ´½ÓµÄÊÂ¼ş
-	WSAEVENT servEvent = WSACreateEvent();//´´½¨Ò»¸öÈË¹¤ÖØÉèÎª´«ĞÅµÄÊÂ¼ş¶ÔÏó
-	WSAEventSelect(servSock, servEvent, FD_ALL_EVENTS);//°ó¶¨ÊÂ¼ş¶ÔÏó£¬²¢ÇÒ¼àÌıËùÓĞÊÂ¼ş
+    cliSock[0] = servSock;
+    cliEvent[0] = servEvent;
 
-	cliSock[0] = servSock;
-	cliEvent[0] = servEvent;
+    // 5ã€å¼€å¯ç›‘å¬
+    listen(servSock, 10); // ç›‘å¬é˜Ÿåˆ—é•¿åº¦ä¸º10
 
-	//5¡¢¿ªÆô¼àÌı
-	listen(servSock, 10);//¼àÌı¶ÓÁĞ³¤¶ÈÎª10
+    // 6ã€åˆ›å»ºæ¥å—é“¾æ¥çš„çº¿ç¨‹
+    // ä¸éœ€è¦å¥æŸ„æ‰€ä»¥ç›´æ¥å…³é—­
+    CloseHandle(CreateThread(NULL, 0, servEventThread, (LPVOID)&servSock, 0, 0));
 
-	//6¡¢´´½¨½ÓÊÜÁ´½ÓµÄÏß³Ì
-	//²»ĞèÒª¾ä±úËùÒÔÖ±½Ó¹Ø±Õ
-	CloseHandle(CreateThread(NULL, 0, servEventThread, (LPVOID)&servSock, 0, 0));
+    cout << "èŠå¤©å®¤æœåŠ¡å™¨å·²å¼€å¯" << endl;
+    // connect test
+    // int addrLen = sizeof(SOCKADDR);//ç”¨äºæ¥æ”¶å®¢æˆ·ç«¯çš„åœ°å€åŒ…ç»“æ„ä½“é•¿åº¦
+    // SOCKET cliSOCK = accept(servSock, (SOCKADDR*)&servAddr,&addrLen);
+    // if (cliSOCK != INVALID_SOCKET)
+    //{
+    //	cout << "é“¾æ¥æˆåŠŸ" << endl;
+    // }
+    // while (1)
+    //{
+    //	char buf[100] = { 0 };//æµ‹è¯•ç¼“å†²åŒº
+    //	int nrecv = recv(cliSOCK, buf, sizeof(buf), 0);
+    //	if (nrecv > 0)//å¦‚æœæ¥æ”¶åˆ°å®¢æˆ·ç«¯çš„ä¿¡æ¯å°±è¾“å‡ºåˆ°å±å¹•
+    //	{
+    //		cout << buf << endl;
+    //	}
+    // }
+    while (1)
+    {
 
-	cout << "ÁÄÌìÊÒ·şÎñÆ÷ÒÑ¿ªÆô" << endl;
-	//connect test
-		//int addrLen = sizeof(SOCKADDR);//ÓÃÓÚ½ÓÊÕ¿Í»§¶ËµÄµØÖ·°ü½á¹¹Ìå³¤¶È
-		//SOCKET cliSOCK = accept(servSock, (SOCKADDR*)&servAddr,&addrLen);
-		//if (cliSOCK != INVALID_SOCKET) 
-		//{
-		//	cout << "Á´½Ó³É¹¦" << endl;
-		//}
-		//while (1)
-		//{
-		//	char buf[100] = { 0 };//²âÊÔ»º³åÇø
-		//	int nrecv = recv(cliSOCK, buf, sizeof(buf), 0);
-		//	if (nrecv > 0)//Èç¹û½ÓÊÕµ½¿Í»§¶ËµÄĞÅÏ¢¾ÍÊä³öµ½ÆÁÄ»
-		//	{
-		//		cout << buf << endl;
-		//	}
-		//}
-		//ĞèÒªÈÃÖ÷Ïß³ÌÒ»Ö±ÔËĞĞÏÂÈ¥
-		//·¢ËÍÏûÏ¢¸øÈ«²¿¿Í»§¶Ë
-		while (1)
-		{
-
-			char contentBuf[BUFFER_SIZE] = { 0 };
-			char sendBuf[BUFFER_SIZE] = { 0 };
-			cin.getline(contentBuf, sizeof(contentBuf));
-			sprintf(sendBuf, "[ÁÄÌìÊÒ]%s", contentBuf);
-			for (int j = 1; j <= total; j++)
-			{
-				send(cliSock[j], sendBuf, sizeof(sendBuf), 0);
-			}
-
-		}
-	//1-¹Ø±Õsocket¿âµÄÊÕÎ²¹¤×÷
-	WSACleanup();
-	return 0;
+        char contentBuf[BUFFER_SIZE] = {0};
+        char sendBuf[BUFFER_SIZE] = {0};
+        cin.getline(contentBuf, sizeof(contentBuf));
+        sprintf(sendBuf, "[èŠå¤©å®¤]%s", contentBuf);
+        for (int j = 1; j <= total; j++)
+        {
+            send(cliSock[j], sendBuf, sizeof(sendBuf), 0);
+        }
+    }
+    // 1-å…³é—­socketåº“çš„æ”¶å°¾å·¥ä½œ
+    WSACleanup();
+    return 0;
 }
 
-DWORD WINAPI servEventThread(LPVOID IpParameter) //·şÎñÆ÷¶ËÏß³Ì
+DWORD WINAPI servEventThread(LPVOID IpParameter) // æœåŠ¡å™¨ç«¯çº¿ç¨‹
 {
-	//¸ÃÏß³Ì¸ºÔğ´¦Àí·şÎñ¶ËºÍ¸÷¸ö¿Í»§¶Ë·¢ÉúµÄÊÂ¼ş
-	//½«´«ÈëµÄ²ÎÊı³õÊ¼»¯
-	SOCKET servSock = *(SOCKET*)IpParameter;//LPVOIDÎª¿ÕÖ¸ÕëÀàĞÍ£¬ĞèÒªÏÈ×ª³ÉSOCKETÀàĞÍÔÙÒıÓÃ£¬¼´¿ÉÊ¹ÓÃ´«ÈëµÄSOCKET
-	while (1) //²»Í£Ö´ĞĞ
-	{
-		for (int i = 0; i < total + 1; i++)//i´ú±íÏÖÔÚÕıÔÚ¼àÌıÊÂ¼şµÄÖÕ¶Ë
-		{
-			//ÈôÓĞÒ»¸ö¿Í»§¶ËÁ´½Ó£¬total==1£¬Ñ­»·Á½´Î£¬°üº¬¿Í»§¶ËºÍ·şÎñ¶Ë
-			//¶ÔÃ¿Ò»¸öÖÕ¶Ë£¨¿Í»§¶ËºÍ·şÎñ¶Ë£©£¬²é¿´ÊÇ·ñ·¢ÉúÊÂ¼ş£¬µÈ´ıWAIT_TIMEºÁÃë
-			int index = WSAWaitForMultipleEvents(1, &cliEvent[i], false, WAIT_TIME, 0);
+    // è¯¥çº¿ç¨‹è´Ÿè´£å¤„ç†æœåŠ¡ç«¯å’Œå„ä¸ªå®¢æˆ·ç«¯å‘ç”Ÿçš„äº‹ä»¶
+    // å°†ä¼ å…¥çš„å‚æ•°åˆå§‹åŒ–
+    string usrs[MAX_LINK_NUM];
+    SOCKET servSock = *(SOCKET *)IpParameter; // LPVOIDä¸ºç©ºæŒ‡é’ˆç±»å‹ï¼Œéœ€è¦å…ˆè½¬æˆSOCKETç±»å‹å†å¼•ç”¨ï¼Œå³å¯ä½¿ç”¨ä¼ å…¥çš„SOCKET
+    while (1)                                 // ä¸åœæ‰§è¡Œ
+    {
+        for (int i = 0; i < total + 1; i++) // iä»£è¡¨ç°åœ¨æ­£åœ¨ç›‘å¬äº‹ä»¶çš„ç»ˆç«¯
+        {
+            // è‹¥æœ‰ä¸€ä¸ªå®¢æˆ·ç«¯é“¾æ¥ï¼Œtotal==1ï¼Œå¾ªç¯ä¸¤æ¬¡ï¼ŒåŒ…å«å®¢æˆ·ç«¯å’ŒæœåŠ¡ç«¯
+            // å¯¹æ¯ä¸€ä¸ªç»ˆç«¯ï¼ˆå®¢æˆ·ç«¯å’ŒæœåŠ¡ç«¯ï¼‰ï¼ŒæŸ¥çœ‹æ˜¯å¦å‘ç”Ÿäº‹ä»¶ï¼Œç­‰å¾…WAIT_TIMEæ¯«ç§’
+            int index = WSAWaitForMultipleEvents(1, &cliEvent[i], false, WAIT_TIME, 0);
 
-			index -= WSA_WAIT_EVENT_0;//´ËÊ±indexÎª·¢ÉúÊÂ¼şµÄÖÕ¶ËÏÂ±ê
+            index -= WSA_WAIT_EVENT_0; // æ­¤æ—¶indexä¸ºå‘ç”Ÿäº‹ä»¶çš„ç»ˆç«¯ä¸‹æ ‡
 
-			if (index == WSA_WAIT_TIMEOUT || index == WSA_WAIT_FAILED)
-			{
-				continue;//Èç¹û³ö´í»òÕß³¬Ê±£¬¼´Ìø¹ı´ËÖÕ¶Ë
-			}
+            if (index == WSA_WAIT_TIMEOUT || index == WSA_WAIT_FAILED)
+            {
+                continue; // å¦‚æœå‡ºé”™æˆ–è€…è¶…æ—¶ï¼Œå³è·³è¿‡æ­¤ç»ˆç«¯
+            }
 
-			else if (index == 0)
-			{
-				WSANETWORKEVENTS networkEvents;
-				WSAEnumNetworkEvents(cliSock[i], cliEvent[i], &networkEvents);//²é¿´ÊÇÊ²Ã´ÊÂ¼ş
+            else if (index == 0)
+            {
+                WSANETWORKEVENTS networkEvents;
+                WSAEnumNetworkEvents(cliSock[i], cliEvent[i], &networkEvents); // æŸ¥çœ‹æ˜¯ä»€ä¹ˆäº‹ä»¶
 
-				//ÊÂ¼şÑ¡Ôñ
-				if (networkEvents.lNetworkEvents & FD_ACCEPT)//Èô²úÉúacceptÊÂ¼ş£¨´Ë´¦ÓëÎ»ÑÚÂëÏàÓë£©
-				{
-					if (networkEvents.iErrorCode[FD_ACCEPT_BIT] != 0)
-					{
-						cout << "Á¬½ÓÊ±²úÉú´íÎó£¬´íÎó´úÂë" << networkEvents.iErrorCode[FD_ACCEPT_BIT] << endl;
-						continue;
-					}
-					//½ÓÊÜÁ´½Ó
-					if (total + 1 < MAX_LINK_NUM)//ÈôÔö¼ÓÒ»¸ö¿Í»§¶ËÈÔÈ»Ğ¡ÓÚ×î´óÁ¬½ÓÊı£¬Ôò½ÓÊÜ¸ÃÁ´½Ó
-					{
-						//totalÎªÒÑÁ¬½Ó¿Í»§¶ËÊıÁ¿
-						int nextIndex = total + 1;//·ÖÅä¸øĞÂ¿Í»§¶ËµÄÏÂ±ê
-						int addrLen = sizeof(SOCKADDR);
-						SOCKET newSock = accept(servSock, (SOCKADDR*)&cliAddr[nextIndex], &addrLen);
-						if (newSock != INVALID_SOCKET)
-						{
-							//ÉèÖÃ·¢ËÍºÍ½ÓÊÕÊ±ÏŞ
-							/*setsockopt(newSock, SOL_SOCKET, SO_SNDTIMEO, (const char*) & SEND_TIMEOUT, sizeof(SEND_TIMEOUT));
-							setsockopt(newSock, SOL_SOCKET, SO_SNDTIMEO, (const char*) &RECV_TIMEOUT, sizeof(RECV_TIMEOUT));*/
-							//¸øĞÂ¿Í»§¶Ë·ÖÅäsocket
-							cliSock[nextIndex] = newSock;
-							//ĞÂ¿Í»§¶ËµÄµØÖ·ÒÑ¾­´æÔÚcliAddr[nextIndex]ÖĞÁË
-							//ÎªĞÂ¿Í»§¶Ë°ó¶¨ÊÂ¼ş¶ÔÏó,Í¬Ê±ÉèÖÃ¼àÌı£¬close£¬read£¬write
-							WSAEVENT newEvent = WSACreateEvent();
-							WSAEventSelect(cliSock[nextIndex], newEvent, FD_CLOSE | FD_READ | FD_WRITE);
-							cliEvent[nextIndex] = newEvent;
-							total++;//¿Í»§¶ËÁ¬½ÓÊıÔö¼Ó
-							cout << "#" << nextIndex << "ÓÎ¿Í£¨IP£º" << inet_ntoa(cliAddr[nextIndex].sin_addr) << ")½øÈëÁËÁÄÌìÊÒ£¬µ±Ç°Á¬½ÓÊı£º" << total << endl;
+                // äº‹ä»¶é€‰æ‹©
+                if (networkEvents.lNetworkEvents & FD_ACCEPT) // è‹¥äº§ç”Ÿacceptäº‹ä»¶ï¼ˆæ­¤å¤„ä¸ä½æ©ç ç›¸ä¸ï¼‰
+                {
+                    if (networkEvents.iErrorCode[FD_ACCEPT_BIT] != 0)
+                    {
+                        cout << "è¿æ¥æ—¶äº§ç”Ÿé”™è¯¯ï¼Œé”™è¯¯ä»£ç " << networkEvents.iErrorCode[FD_ACCEPT_BIT] << endl;
+                        continue;
+                    }
+                    // æ¥å—é“¾æ¥
+                    if (total + 1 < MAX_LINK_NUM) // è‹¥å¢åŠ ä¸€ä¸ªå®¢æˆ·ç«¯ä»ç„¶å°äºæœ€å¤§è¿æ¥æ•°ï¼Œåˆ™æ¥å—è¯¥é“¾æ¥
+                    {
+                        // totalä¸ºå·²è¿æ¥å®¢æˆ·ç«¯æ•°é‡
+                        int nextIndex = total + 1; // åˆ†é…ç»™æ–°å®¢æˆ·ç«¯çš„ä¸‹æ ‡
+                        int addrLen = sizeof(SOCKADDR);
+                        SOCKET newSock = accept(servSock, (SOCKADDR *)&cliAddr[nextIndex], &addrLen);
+                        if (newSock != INVALID_SOCKET)
+                        {
+                            // è®¾ç½®å‘é€å’Œæ¥æ”¶æ—¶é™
+                            /*setsockopt(newSock, SOL_SOCKET, SO_SNDTIMEO, (const char*) & SEND_TIMEOUT, sizeof(SEND_TIMEOUT));
+                            setsockopt(newSock, SOL_SOCKET, SO_SNDTIMEO, (const char*) &RECV_TIMEOUT, sizeof(RECV_TIMEOUT));*/
+                            // ç»™æ–°å®¢æˆ·ç«¯åˆ†é…socket
+                            cliSock[nextIndex] = newSock;
+                            // æ–°å®¢æˆ·ç«¯çš„åœ°å€å·²ç»å­˜åœ¨cliAddr[nextIndex]ä¸­äº†
+                            // ä¸ºæ–°å®¢æˆ·ç«¯ç»‘å®šäº‹ä»¶å¯¹è±¡,åŒæ—¶è®¾ç½®ç›‘å¬ï¼Œcloseï¼Œreadï¼Œwrite
+                            WSAEVENT newEvent = WSACreateEvent();
+                            WSAEventSelect(cliSock[nextIndex], newEvent, FD_CLOSE | FD_READ | FD_WRITE);
+                            cliEvent[nextIndex] = newEvent;
+                            total++; // å®¢æˆ·ç«¯è¿æ¥æ•°å¢åŠ 
+                            // æ¥æ”¶ç”¨æˆ·åç§°ä¿¡æ¯
+                            char usr_name_char[100] = {0};
+                            int nrecv = recv(cliSock[nextIndex], usr_name_char, sizeof(usr_name_char), 0);
+                            usrs[nextIndex] = (string)usr_name_char;
+                            cout << "#" << nextIndex << "ç”¨æˆ·" << usr_name_char << "è¿›å…¥äº†èŠå¤©å®¤ï¼Œå½“å‰è¿æ¥æ•°ï¼š" << total << endl;
+                            // ç»™æ‰€æœ‰å®¢æˆ·ç«¯å‘é€æ¬¢è¿æ¶ˆæ¯
+                            char buf[BUFFER_SIZE] = "[èŠå¤©å®¤]æ¬¢è¿ç”¨æˆ·";
+                            strcat(buf, usr_name_char);
+                            strcat(buf, "è¿›å…¥èŠå¤©å®¤");
+                            for (int j = i; j <= total; j++)
+                            {
+                                send(cliSock[j], buf, sizeof(buf), 0);
+                            }
+                        }
+                    }
+                }
+                else if (networkEvents.lNetworkEvents & FD_CLOSE) // å®¢æˆ·ç«¯è¢«å…³é—­ï¼Œå³æ–­å¼€è¿æ¥
+                {
 
-							//¸øËùÓĞ¿Í»§¶Ë·¢ËÍ»¶Ó­ÏûÏ¢
-							char buf[BUFFER_SIZE] = "[ÁÄÌìÊÒ]»¶Ó­ÓÎ¿Í£¨IP£º";
-							strcat(buf, inet_ntoa(cliAddr[nextIndex].sin_addr));
-							strcat(buf, ")½øÈëÁÄÌìÊÒ");
-							for (int j = i; j <= total; j++)
-							{
+                    // iè¡¨ç¤ºå·²å…³é—­çš„å®¢æˆ·ç«¯ä¸‹æ ‡
+                    total--;
+                    cout << "#" << i << "ç”¨æˆ·" << usrs[i] << "é€€å‡ºäº†èŠå¤©å®¤,å½“å‰è¿æ¥æ•°ï¼š" << total << endl;
+                    // é‡Šæ”¾è¿™ä¸ªå®¢æˆ·ç«¯çš„èµ„æº
+                    closesocket(cliSock[i]);
+                    WSACloseEvent(cliEvent[i]);
 
-								send(cliSock[j], buf, sizeof(buf), 0);
+                    // æ•°ç»„è°ƒæ•´,ç”¨é¡ºåºè¡¨åˆ é™¤å…ƒç´ 
+                    for (int j = i; j < total; j++)
+                    {
+                        cliSock[j] = cliSock[j + 1];
+                        cliEvent[j] = cliEvent[j + 1];
+                        cliAddr[j] = cliAddr[j + 1];
+                    }
+                    // ç»™æ‰€æœ‰å®¢æˆ·ç«¯å‘é€é€€å‡ºèŠå¤©å®¤çš„æ¶ˆæ¯
+                    char buf[BUFFER_SIZE] = "[èŠå¤©å®¤]";
+                    strcat(buf, usrs[i].c_str());
+                    strcat(buf, "é€€å‡ºèŠå¤©å®¤");
+                    for (int j = 1; j <= total; j++)
+                    {
+                        send(cliSock[j], buf, sizeof(buf), 0);
+                    }
+                }
+                else if (networkEvents.lNetworkEvents & FD_READ) // æ¥æ”¶åˆ°æ¶ˆæ¯
+                {
 
-							}
-						}
-					}
+                    char buffer[BUFFER_SIZE] = {0}; // å­—ç¬¦ç¼“å†²åŒºï¼Œç”¨äºæ¥æ”¶å’Œå‘é€æ¶ˆæ¯
+                    char buffer2[BUFFER_SIZE] = {0};
 
-				}
-				else if (networkEvents.lNetworkEvents & FD_CLOSE)//¿Í»§¶Ë±»¹Ø±Õ£¬¼´¶Ï¿ªÁ¬½Ó
-				{
-
-					//i±íÊ¾ÒÑ¹Ø±ÕµÄ¿Í»§¶ËÏÂ±ê
-					total--;
-					cout << "#" << i << "ÓÎ¿Í£¨IP£º" << inet_ntoa(cliAddr[i].sin_addr) << ")ÍË³öÁËÁÄÌìÊÒ,µ±Ç°Á¬½ÓÊı£º" << total << endl;
-					//ÊÍ·ÅÕâ¸ö¿Í»§¶ËµÄ×ÊÔ´
-					closesocket(cliSock[i]);
-					WSACloseEvent(cliEvent[i]);
-
-					//Êı×éµ÷Õû,ÓÃË³Ğò±íÉ¾³ıÔªËØ
-					for (int j = i; j < total; j++)
-					{
-						cliSock[j] = cliSock[j + 1];
-						cliEvent[j] = cliEvent[j + 1];
-						cliAddr[j] = cliAddr[j + 1];
-					}
-					//¸øËùÓĞ¿Í»§¶Ë·¢ËÍÍË³öÁÄÌìÊÒµÄÏûÏ¢
-					char buf[BUFFER_SIZE] = "[ÁÄÌìÊÒ]£¨IP£º";
-					strcat(buf, inet_ntoa(cliAddr[i].sin_addr));
-					strcat(buf, ")ÍË³öÁÄÌìÊÒ");
-					for (int j = 1; j <= total; j++)
-					{
-						send(cliSock[j], buf, sizeof(buf), 0);
-
-					}
-
-
-				}
-				else if (networkEvents.lNetworkEvents & FD_READ)//½ÓÊÕµ½ÏûÏ¢
-				{
-
-					char buffer[BUFFER_SIZE] = { 0 };//×Ö·û»º³åÇø£¬ÓÃÓÚ½ÓÊÕºÍ·¢ËÍÏûÏ¢
-					char buffer2[BUFFER_SIZE] = { 0 };
-
-					for (int j = 1; j <= total; j++)
-					{
-						int nrecv = recv(cliSock[j], buffer, sizeof(buffer), 0);//nrecvÊÇ½ÓÊÕµ½µÄ×Ö½ÚÊı
-						if (nrecv > 0)//Èç¹û½ÓÊÕµ½µÄ×Ö·ûÊı´óÓÚ0
-						{
-							sprintf(buffer2, "[#%d]%s", j, buffer);
-							//ÔÚ·şÎñ¶ËÏÔÊ¾
-							cout << buffer2 << endl;
-							//ÔÚÆäËû¿Í»§¶ËÏÔÊ¾£¨¹ã²¥¸øÆäËû¿Í»§¶Ë£©
-							for (int k = 1; k <= total; k++)
-							{
-								send(cliSock[k], buffer2, sizeof(buffer), 0);
-							}
-						}
-
-					}
-
-
-
-				}
-			}
-		}
-
-
-	}
-	return 0;
+                    for (int j = 1; j <= total; j++)
+                    {
+                        int nrecv = recv(cliSock[j], buffer, sizeof(buffer), 0); // nrecvæ˜¯æ¥æ”¶åˆ°çš„å­—èŠ‚æ•°
+                        if (nrecv > 0)                                           // å¦‚æœæ¥æ”¶åˆ°çš„å­—ç¬¦æ•°å¤§äº0
+                        {
+                            sprintf(buffer2, "%s", buffer);
+                            // åœ¨æœåŠ¡ç«¯æ˜¾ç¤º
+                            cout << buffer2 << endl;
+                            // åœ¨å…¶ä»–å®¢æˆ·ç«¯æ˜¾ç¤ºï¼ˆå¹¿æ’­ç»™å…¶ä»–å®¢æˆ·ç«¯ï¼‰
+                            for (int k = 1; k <= total; k++)
+                            {
+                                send(cliSock[k], buffer2, sizeof(buffer), 0);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return 0;
 }

@@ -1,81 +1,83 @@
-// ÁÄÌì³ÌĞò¿Í»§¶Ë
-
-//#include"pch.h"//Ô¤±àÒëÍ·
-#include<iostream>
-#include<Winsock2.h>//socketÍ·ÎÄ¼ş
-#include<cstring>
+#include <iostream>
+#include <Winsock2.h> //socketå¤´æ–‡ä»¶
+#include <cstring>
 
 using namespace std;
 
+#pragma comment(lib, "ws2_32.lib") // socketåº“
 
-//ÔØÈëÏµÍ³Ìá¹©µÄsocket¶¯Ì¬Á´½Ó¿â
-
-#pragma comment(lib,"ws2_32.lib")   //socket¿â
-
-const int BUFFER_SIZE = 1024;//»º³åÇø´óĞ¡
+const int BUFFER_SIZE = 1024; // ç¼“å†²åŒºå¤§å°
 
 DWORD WINAPI recvMsgThread(LPVOID IpParameter);
 
-int main() {
-	//1¡¢³õÊ¼»¯socket¿â
-	WSADATA wsaData;//»ñÈ¡°æ±¾ĞÅÏ¢£¬ËµÃ÷ÒªÊ¹ÓÃµÄ°æ±¾
-	WSAStartup(MAKEWORD(2, 2), &wsaData);//MAKEWORD(Ö÷°æ±¾ºÅ, ¸±°æ±¾ºÅ)
+int main()
+{
+    // 1ã€åˆå§‹åŒ–socketåº“
+    WSADATA wsaData;                      // è·å–ç‰ˆæœ¬ä¿¡æ¯ï¼Œè¯´æ˜è¦ä½¿ç”¨çš„ç‰ˆæœ¬
+    WSAStartup(MAKEWORD(2, 2), &wsaData); // MAKEWORD(ä¸»ç‰ˆæœ¬å·, å‰¯ç‰ˆæœ¬å·)
 
-	//2¡¢´´½¨socket
-	SOCKET cliSock = socket(AF_INET, SOCK_STREAM, 0);//ÃæÏòÍøÂ·µÄÁ÷Ê½Ì×½Ó×Ö,µÚÈı¸ö²ÎÊı´ú±í×Ô¶¯Ñ¡ÔñĞ­Òé
+    // 2ã€åˆ›å»ºsocket
+    SOCKET cliSock = socket(AF_INET, SOCK_STREAM, 0); // é¢å‘ç½‘è·¯çš„æµå¼å¥—æ¥å­—,ç¬¬ä¸‰ä¸ªå‚æ•°ä»£è¡¨è‡ªåŠ¨é€‰æ‹©åè®®
 
-	//3¡¢´ò°üµØÖ·
-	//¿Í»§¶Ë
-	SOCKADDR_IN cliAddr = { 0 };
-	cliAddr.sin_family = AF_INET;
-	cliAddr.sin_addr.s_addr = inet_addr("127.0.0.1");//IPµØÖ·
-	cliAddr.sin_port = htons(12345);//¶Ë¿ÚºÅ
-	//·şÎñ¶Ë
-	SOCKADDR_IN servAddr = { 0 };
-	servAddr.sin_family = AF_INET;//ºÍ·şÎñÆ÷µÄsocketÒ»Ñù£¬sin_family±íÊ¾Ğ­Òé´Ø£¬Ò»°ãÓÃAF_INET±íÊ¾TCP/IPĞ­Òé¡£
-	servAddr.sin_addr.S_un.S_addr = inet_addr("127.0.0.1");//·şÎñ¶ËµØÖ·ÉèÖÃÎª±¾µØ»Ø»·µØÖ·
-	servAddr.sin_port = htons(12345);//host to net short ¶Ë¿ÚºÅÉèÖÃÎª12345
+    // 3ã€æ‰“åŒ…åœ°å€
+    // å®¢æˆ·ç«¯
+    SOCKADDR_IN cliAddr = {0};
+    cliAddr.sin_family = AF_INET;
+    cliAddr.sin_addr.s_addr = inet_addr("127.0.0.1"); // IPåœ°å€
+    cliAddr.sin_port = htons(12345);                  // ç«¯å£å·
+    // æœåŠ¡ç«¯
+    SOCKADDR_IN servAddr = {0};
+    servAddr.sin_family = AF_INET;                          // å’ŒæœåŠ¡å™¨çš„socketä¸€æ ·ï¼Œsin_familyè¡¨ç¤ºåè®®ç°‡ï¼Œä¸€èˆ¬ç”¨AF_INETè¡¨ç¤ºTCP/IPåè®®ã€‚
+    servAddr.sin_addr.S_un.S_addr = inet_addr("127.0.0.1"); // æœåŠ¡ç«¯åœ°å€è®¾ç½®ä¸ºæœ¬åœ°å›ç¯åœ°å€
+    servAddr.sin_port = htons(12345);                       // host to net short ç«¯å£å·è®¾ç½®ä¸º12345
 
-	if (connect(cliSock, (SOCKADDR*)&servAddr, sizeof(SOCKADDR)) == SOCKET_ERROR)
-	{
-		cout << "Á´½Ó³öÏÖ´íÎó£¬´íÎó´úÂë" << WSAGetLastError() << endl;
-	}
+    if (connect(cliSock, (SOCKADDR *)&servAddr, sizeof(SOCKADDR)) == SOCKET_ERROR)
+    {
+        cout << "é“¾æ¥å‡ºç°é”™è¯¯ï¼Œé”™è¯¯ä»£ç " << WSAGetLastError() << endl;
+    }
 
-	//´´½¨½ÓÊÜÏûÏ¢Ïß³Ì
-	CloseHandle(CreateThread(NULL, 0, recvMsgThread, (LPVOID)&cliSock, 0, 0));
-	//Ö÷Ïß³ÌÓÃÓÚÊäÈëÒª·¢ËÍµÄÏûÏ¢
-	while (1)
-	{
-		char buf[BUFFER_SIZE] = { 0 };
-		cin.getline(buf, sizeof(buf));
-		if (strcmp(buf, "quit") == 0)//ÈôÊäÈë¡°quit¡±£¬ÔòÍË³öÁÄÌìÊÒ
-		{
-			break;
-		}
-		send(cliSock, buf, sizeof(buf), 0);
-	}
-	closesocket(cliSock);
-	WSACleanup();
-	return 0;
+    printf("è¯·è¾“å…¥æ‚¨çš„åç§°:");
+    string usr_name;
+    cin >> usr_name;
+    usr_name = '[' + usr_name + ']';
+    send(cliSock, usr_name.c_str(), usr_name.length(), 0); // å‘é€ç”¨æˆ·åç§°ç»™æœåŠ¡å™¨
+
+    // åˆ›å»ºæ¥å—æ¶ˆæ¯çº¿ç¨‹
+    CloseHandle(CreateThread(NULL, 0, recvMsgThread, (LPVOID)&cliSock, 0, 0));
+    // ä¸»çº¿ç¨‹ç”¨äºè¾“å…¥è¦å‘é€çš„æ¶ˆæ¯
+
+    while (1)
+    {
+        char buf[BUFFER_SIZE] = {0};
+        cin.getline(buf, sizeof(buf));
+        if (strcmp(buf, "quit") == 0) // è‹¥è¾“å…¥â€œquitâ€ï¼Œåˆ™é€€å‡ºèŠå¤©å®¤
+        {
+            break;
+        }
+        send(cliSock, (usr_name + (string)buf).c_str(), usr_name.length() + sizeof(buf), 0);
+    }
+    closesocket(cliSock);
+    WSACleanup();
+    return 0;
 }
 
-DWORD WINAPI recvMsgThread(LPVOID IpParameter)//½ÓÊÕÏûÏ¢µÄÏß³Ì
+DWORD WINAPI recvMsgThread(LPVOID IpParameter) // æ¥æ”¶æ¶ˆæ¯çš„çº¿ç¨‹
 {
-	SOCKET cliSock = *(SOCKET*)IpParameter;//»ñÈ¡¿Í»§¶ËµÄSOCKET²ÎÊı
+    SOCKET cliSock = *(SOCKET *)IpParameter; // è·å–å®¢æˆ·ç«¯çš„SOCKETå‚æ•°
 
-	while (1)
-	{
-		char buffer[BUFFER_SIZE] = { 0 };//×Ö·û»º³åÇø£¬ÓÃÓÚ½ÓÊÕºÍ·¢ËÍÏûÏ¢
-		int nrecv = recv(cliSock, buffer, sizeof(buffer), 0);//nrecvÊÇ½ÓÊÕµ½µÄ×Ö½ÚÊı
-		if (nrecv > 0)//Èç¹û½ÓÊÕµ½µÄ×Ö·ûÊı´óÓÚ0
-		{
-			cout << buffer << endl;
-		}
-		else if (nrecv < 0)//Èç¹û½ÓÊÕµ½µÄ×Ö·ûÊıĞ¡ÓÚ0¾ÍËµÃ÷¶Ï¿ªÁ¬½Ó
-		{
-			cout << "Óë·şÎñÆ÷¶Ï¿ªÁ¬½Ó" << endl;
-			break;
-		}
-	}
-	return 0;
+    while (1)
+    {
+        char buffer[BUFFER_SIZE] = {0};                       // å­—ç¬¦ç¼“å†²åŒºï¼Œç”¨äºæ¥æ”¶å’Œå‘é€æ¶ˆæ¯
+        int nrecv = recv(cliSock, buffer, sizeof(buffer), 0); // nrecvæ˜¯æ¥æ”¶åˆ°çš„å­—èŠ‚æ•°
+        if (nrecv > 0)                                        // å¦‚æœæ¥æ”¶åˆ°çš„å­—ç¬¦æ•°å¤§äº0
+        {
+            cout << buffer << endl;
+        }
+        else if (nrecv < 0) // å¦‚æœæ¥æ”¶åˆ°çš„å­—ç¬¦æ•°å°äº0å°±è¯´æ˜æ–­å¼€è¿æ¥
+        {
+            cout << "ä¸æœåŠ¡å™¨æ–­å¼€è¿æ¥" << endl;
+            break;
+        }
+    }
+    return 0;
 }
