@@ -147,7 +147,7 @@ DWORD WINAPI servEventThread(LPVOID IpParameter) // 服务器端线程
                                 int nrecv = recv(cliSock[nextIndex], usr_name_char, sizeof(usr_name_char), 0);
                                 if (nrecv > 0)
                                 {
-                                    usrs[nextIndex] = string(usr_name_char);
+                                    usrs[nextIndex] = string(usr_name_char).substr(0, sizeof(usr_name_char) - 2);
                                     cout << "#" << nextIndex << "用户" << usrs[nextIndex] << "进入了聊天室，当前连接数：" << total << endl;
                                     send(cliSock[nextIndex], "ACK", 3, 0);
                                     break;
@@ -155,7 +155,7 @@ DWORD WINAPI servEventThread(LPVOID IpParameter) // 服务器端线程
                             }
                             // 给所有客户端发送欢迎消息
                             char buf[BUFFER_SIZE] = "[聊天室]欢迎用户";
-                            strcat(buf, usr_name_char);
+                            strcat(buf, usrs[nextIndex].c_str());
                             strcat(buf, "进入聊天室");
                             for (int j = i; j <= total; j++)
                             {
@@ -182,7 +182,7 @@ DWORD WINAPI servEventThread(LPVOID IpParameter) // 服务器端线程
                         cliAddr[j] = cliAddr[j + 1];
                     }
                     // 给所有客户端发送退出聊天室的消息
-                    char buf[BUFFER_SIZE] = "[聊天室]";
+                    char buf[BUFFER_SIZE] = "[聊天室]用户";
                     strcat(buf, usrs[i].c_str());
                     strcat(buf, "退出聊天室");
                     for (int j = 1; j <= total; j++)
@@ -205,9 +205,30 @@ DWORD WINAPI servEventThread(LPVOID IpParameter) // 服务器端线程
                             // 在服务端显示
                             cout << buffer2 << endl;
                             // 在其他客户端显示（广播给其他客户端）
-                            for (int k = 1; k <= total; k++)
+                            // 获取去除了[]部分的内容
+                            char content[100];                        // 假设最大长度为100
+                            std::memset(content, 0, sizeof(content)); // 初始化content为0，方便后续处理
+                            std::strcpy(content, buffer2 + 1);        // 将去除了开头'['的部分拷贝到content中
+                            // 获取[]里面的内容
+                            char cl_name[100];                                                  // 假设最大长度为100
+                            std::memset(cl_name, 0, sizeof(cl_name));                           // 初始化inside为0，方便后续处理
+                            std::strncpy(cl_name, buffer2 + 1, std::strcspn(buffer2 + 1, "]")); // 将开头'['后面到第一个']'之前的部分拷贝到inside中
+
+                            if (strlen(cl_name) != 0)
                             {
-                                send(cliSock[k], buffer2, sizeof(buffer), 0);
+                                cout << "发送私聊给" << cl_name << endl;
+                                for (int k = 1; k <= total; k++)
+                                {
+                                    if (strcmp(cl_name, usrs[k].c_str()) == 0)
+                                        send(cliSock[k], buffer2, sizeof(buffer), 0);
+                                }
+                            }
+                            else
+                            {
+                                for (int k = 1; k <= total; k++)
+                                {
+                                    send(cliSock[k], buffer2, sizeof(buffer), 0);
+                                }
                             }
                         }
                     }

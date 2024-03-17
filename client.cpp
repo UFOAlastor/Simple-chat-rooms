@@ -36,6 +36,9 @@ int main()
         cout << "链接出现错误，错误代码" << WSAGetLastError() << endl;
     }
 
+    // ADD 设置私聊对象名称
+    string sl_name = "[zyf]";
+
     printf("请输入您的名称: ");
     string usr_name;
     cin >> usr_name;
@@ -53,7 +56,7 @@ int main()
         {
             break;
         }
-        send(cliSock, (usr_name + (string)buf).c_str(), usr_name.length() + sizeof(buf), 0);
+        send(cliSock, (sl_name + usr_name + (string)buf).c_str(), sl_name.length() + usr_name.length() + sizeof(buf), 0);
     }
     closesocket(cliSock);
     WSACleanup();
