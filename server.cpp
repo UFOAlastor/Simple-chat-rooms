@@ -141,10 +141,18 @@ DWORD WINAPI servEventThread(LPVOID IpParameter) // 服务器端线程
                             cliEvent[nextIndex] = newEvent;
                             total++; // 客户端连接数增加
                             // 接收用户名称信息
-                            char usr_name_char[100] = {0};
-                            int nrecv = recv(cliSock[nextIndex], usr_name_char, sizeof(usr_name_char), 0);
-                            usrs[nextIndex] = string(usr_name_char);
-                            cout << "#" << nextIndex << "用户" << usr_name_char << "进入了聊天室，当前连接数：" << total << endl;
+                            char usr_name_char[BUFFER_SIZE] = {0};
+                            while (1)
+                            {
+                                int nrecv = recv(cliSock[nextIndex], usr_name_char, sizeof(usr_name_char), 0);
+                                if (nrecv > 0)
+                                {
+                                    usrs[nextIndex] = string(usr_name_char);
+                                    cout << "#" << nextIndex << "用户" << usrs[nextIndex] << "进入了聊天室，当前连接数：" << total << endl;
+                                    send(cliSock[nextIndex], "ACK", 3, 0);
+                                    break;
+                                }
+                            }
                             // 给所有客户端发送欢迎消息
                             char buf[BUFFER_SIZE] = "[聊天室]欢迎用户";
                             strcat(buf, usr_name_char);

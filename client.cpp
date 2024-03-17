@@ -36,7 +36,7 @@ int main()
         cout << "链接出现错误，错误代码" << WSAGetLastError() << endl;
     }
 
-    printf("请输入您的名称:");
+    printf("请输入您的名称: ");
     string usr_name;
     cin >> usr_name;
     usr_name = '[' + usr_name + ']';
@@ -45,7 +45,6 @@ int main()
     // 创建接受消息线程
     CloseHandle(CreateThread(NULL, 0, recvMsgThread, (LPVOID)&cliSock, 0, 0));
     // 主线程用于输入要发送的消息
-
     while (1)
     {
         char buf[BUFFER_SIZE] = {0};
