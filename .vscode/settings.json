@@ -3,6 +3,17 @@
         "*.cpp": "cpp",
         "*.m": "matlab",
         "xstring": "cpp",
-        "ostream": "cpp"
+        "ostream": "cpp",
+        "*.inc": "cpp",
+        "vector": "cpp",
+        "iostream": "cpp",
+        "xlocmes": "cpp",
+        "xlocinfo": "cpp",
+        "deque": "cpp",
+        "format": "cpp",
+        "list": "cpp",
+        "system_error": "cpp",
+        "string": "cpp",
+        "xlocale": "cpp"
     }
 }

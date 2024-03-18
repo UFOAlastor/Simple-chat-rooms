@@ -1,7 +1,8 @@
+#include <vector>
+#include <cstring>
 #include <iostream>
 #include <Winsock2.h> //socket头文件
-#include <cstring>
-
+#include "chatroom.pb.h"
 using namespace std;
 
 #pragma comment(lib, "ws2_32.lib") // socket库
@@ -53,30 +54,14 @@ int main()
     CloseHandle(CreateThread(NULL, 0, servEventThread, (LPVOID)&servSock, 0, 0));
 
     cout << "聊天室服务器已开启" << endl;
-    // connect test
-    // int addrLen = sizeof(SOCKADDR);//用于接收客户端的地址包结构体长度
-    // SOCKET cliSOCK = accept(servSock, (SOCKADDR*)&servAddr,&addrLen);
-    // if (cliSOCK != INVALID_SOCKET)
-    //{
-    //	cout << "链接成功" << endl;
-    // }
-    // while (1)
-    //{
-    //	char buf[100] = { 0 };//测试缓冲区
-    //	int nrecv = recv(cliSOCK, buf, sizeof(buf), 0);
-    //	if (nrecv > 0)//如果接收到客户端的信息就输出到屏幕
-    //	{
-    //		cout << buf << endl;
-    //	}
-    // }
-    while (1)
-    {
 
+    while (1) // 聊天室主进程
+    {
         char contentBuf[BUFFER_SIZE] = {0};
         char sendBuf[BUFFER_SIZE] = {0};
         cin.getline(contentBuf, sizeof(contentBuf));
         sprintf(sendBuf, "[聊天室]%s", contentBuf);
-        for (int j = 1; j <= total; j++)
+        for (int j = 1; j <= total; ++j)
         {
             send(cliSock[j], sendBuf, sizeof(sendBuf), 0);
         }
@@ -90,11 +75,12 @@ DWORD WINAPI servEventThread(LPVOID IpParameter) // 服务器端线程
 {
     // 该线程负责处理服务端和各个客户端发生的事件
     // 将传入的参数初始化
-    string usrs[MAX_LINK_NUM];
+    vector<string> user_list;
+    vector<vector<vector<string>>> history_msg;
     SOCKET servSock = *(SOCKET *)IpParameter; // LPVOID为空指针类型，需要先转成SOCKET类型再引用，即可使用传入的SOCKET
-    while (1)                                 // 不停执行
+    while (true)
     {
-        for (int i = 0; i < total + 1; i++) // i代表现在正在监听事件的终端
+        for (int i = 0; i <= total; ++i) // i代表现在正在监听事件的终端
         {
             // 若有一个客户端链接，total==1，循环两次，包含客户端和服务端
             // 对每一个终端（客户端和服务端），查看是否发生事件，等待WAIT_TIME毫秒
@@ -130,8 +116,8 @@ DWORD WINAPI servEventThread(LPVOID IpParameter) // 服务器端线程
                         if (newSock != INVALID_SOCKET)
                         {
                             // 设置发送和接收时限
-                            /*setsockopt(newSock, SOL_SOCKET, SO_SNDTIMEO, (const char*) & SEND_TIMEOUT, sizeof(SEND_TIMEOUT));
-                            setsockopt(newSock, SOL_SOCKET, SO_SNDTIMEO, (const char*) &RECV_TIMEOUT, sizeof(RECV_TIMEOUT));*/
+                            setsockopt(newSock, SOL_SOCKET, SO_SNDTIMEO, (const char *)&SEND_TIMEOUT, sizeof(SEND_TIMEOUT));
+                            setsockopt(newSock, SOL_SOCKET, SO_SNDTIMEO, (const char *)&RECV_TIMEOUT, sizeof(RECV_TIMEOUT));
                             // 给新客户端分配socket
                             cliSock[nextIndex] = newSock;
                             // 新客户端的地址已经存在cliAddr[nextIndex]中了
@@ -141,23 +127,21 @@ DWORD WINAPI servEventThread(LPVOID IpParameter) // 服务器端线程
                             cliEvent[nextIndex] = newEvent;
                             total++; // 客户端连接数增加
                             // 接收用户名称信息
-                            char usr_name_char[BUFFER_SIZE] = {0};
-                            while (1)
+                            char buffer[BUFFER_SIZE] = {0};
+                            int nrecv = recv(cliSock[nextIndex], buffer, sizeof(buffer), 0);
+                            if (nrecv > 0)
                             {
-                                int nrecv = recv(cliSock[nextIndex], usr_name_char, sizeof(usr_name_char), 0);
-                                if (nrecv > 0)
-                                {
-                                    usrs[nextIndex] = string(usr_name_char).substr(0, sizeof(usr_name_char) - 2);
-                                    cout << "#" << nextIndex << "用户" << usrs[nextIndex] << "进入了聊天室，当前连接数：" << total << endl;
-                                    send(cliSock[nextIndex], "ACK", 3, 0);
-                                    break;
-                                }
+                                InitConnectReq iconnectReq;
+                                string receivedData(buffer, nrecv);
+                                iconnectReq.ParseFromString(receivedData);
+                                user_list[nextIndex] = string(iconnectReq.sender()).substr(0, sizeof(iconnectReq.sender()) - 2);
+                                cout << "#" << nextIndex << "用户" << user_list[nextIndex] << "进入了聊天室，当前连接数：" << total << endl;
                             }
                             // 给所有客户端发送欢迎消息
                             char buf[BUFFER_SIZE] = "[聊天室]欢迎用户";
-                            strcat(buf, usrs[nextIndex].c_str());
+                            strcat(buf, user_list[nextIndex].c_str());
                             strcat(buf, "进入聊天室");
-                            for (int j = i; j <= total; j++)
+                            for (int j = i; j <= total; ++j)
                             {
                                 send(cliSock[j], buf, sizeof(buf), 0);
                             }
@@ -166,16 +150,15 @@ DWORD WINAPI servEventThread(LPVOID IpParameter) // 服务器端线程
                 }
                 else if (networkEvents.lNetworkEvents & FD_CLOSE) // 客户端被关闭，即断开连接
                 {
-
                     // i表示已关闭的客户端下标
                     total--;
-                    cout << "#" << i << "用户" << usrs[i] << "退出了聊天室,当前连接数：" << total << endl;
+                    cout << "#" << i << "用户" << user_list[i] << "退出了聊天室,当前连接数：" << total << endl;
                     // 释放这个客户端的资源
                     closesocket(cliSock[i]);
                     WSACloseEvent(cliEvent[i]);
-
+                    user_list.erase(user_list.begin() + i); // i下标从0开始
                     // 数组调整,用顺序表删除元素
-                    for (int j = i; j < total; j++)
+                    for (int j = i; j < total; ++j)
                     {
                         cliSock[j] = cliSock[j + 1];
                         cliEvent[j] = cliEvent[j + 1];
@@ -183,9 +166,9 @@ DWORD WINAPI servEventThread(LPVOID IpParameter) // 服务器端线程
                     }
                     // 给所有客户端发送退出聊天室的消息
                     char buf[BUFFER_SIZE] = "[聊天室]用户";
-                    strcat(buf, usrs[i].c_str());
+                    strcat(buf, user_list[i].c_str());
                     strcat(buf, "退出聊天室");
-                    for (int j = 1; j <= total; j++)
+                    for (int j = 1; j <= total; ++j)
                     {
                         send(cliSock[j], buf, sizeof(buf), 0);
                     }
@@ -194,41 +177,105 @@ DWORD WINAPI servEventThread(LPVOID IpParameter) // 服务器端线程
                 {
 
                     char buffer[BUFFER_SIZE] = {0}; // 字符缓冲区，用于接收和发送消息
-                    char buffer2[BUFFER_SIZE] = {0};
 
                     for (int j = 1; j <= total; j++)
                     {
                         int nrecv = recv(cliSock[j], buffer, sizeof(buffer), 0); // nrecv是接收到的字节数
                         if (nrecv > 0)                                           // 如果接收到的字符数大于0
                         {
-                            sprintf(buffer2, "%s", buffer);
+                            string receivedData(buffer, nrecv);
                             // 在服务端显示
-                            cout << buffer2 << endl;
-                            // 在其他客户端显示（广播给其他客户端）
-                            // 获取去除了[]部分的内容
-                            char content[100];                        // 假设最大长度为100
-                            std::memset(content, 0, sizeof(content)); // 初始化content为0，方便后续处理
-                            std::strcpy(content, buffer2 + 1);        // 将去除了开头'['的部分拷贝到content中
-                            // 获取[]里面的内容
-                            char cl_name[100];                                                  // 假设最大长度为100
-                            std::memset(cl_name, 0, sizeof(cl_name));                           // 初始化inside为0，方便后续处理
-                            std::strncpy(cl_name, buffer2 + 1, std::strcspn(buffer2 + 1, "]")); // 将开头'['后面到第一个']'之前的部分拷贝到inside中
-
-                            if (strlen(cl_name) != 0)
+                            ChatMsgReq cMsgReq; // Rsp是服务端返回内容的类
+                            cMsgReq.ParseFromString(receivedData);
+                            cout << cMsgReq << endl;
+                            int msgtype = cMsgReq.msg_type();
+                            if (msgtype == 1) // 消息发送-1, 历史消息请求-2, 用户列表请求-3
                             {
-                                cout << "发送私聊给" << cl_name << endl;
-                                for (int k = 1; k <= total; k++)
+                                bool is_private = cMsgReq.is_private();
+                                const Message &message = cMsgReq.message();
+                                string msgcontent = message.content();
+                                // 设置回复内容
+                                ChatMsgRsp cMsgRsp;
+                                cMsgRsp.mutable_message()->set_sender(user_list[j]);
+                                cMsgRsp.mutable_message()->set_content(msgcontent);
+                                string serialized_message;
+                                cMsgRsp.SerializeToString(&serialized_message); // 序列化回复内容
+                                if (is_private)
                                 {
-                                    if (strcmp(cl_name, usrs[k].c_str()) == 0)
-                                        send(cliSock[k], buffer2, sizeof(buffer), 0);
+                                    string target_username = cMsgReq.target_username();
+                                    cout << "发送私聊给" << target_username << endl;
+                                    for (int k = 1; k <= total; ++k)
+                                    {
+                                        if (target_username == user_list[k])
+                                        {
+                                            send(cliSock[k], serialized_message.c_str(), serialized_message.length(), 0);
+                                            if (j < k)
+                                                history_msg[j][k].push_back(serialized_message);
+                                            else
+                                                history_msg[k][j].push_back(serialized_message);
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    for (int k = 1; k <= total; ++k)
+                                    {
+                                        send(cliSock[k], serialized_message.c_str(), serialized_message.length(), 0);
+                                    }
+                                    history_msg[0][0].push_back(serialized_message);
                                 }
                             }
-                            else
+                            else if (msgtype == 2) // 消息发送-1, 历史消息请求-2, 用户列表请求-3
                             {
-                                for (int k = 1; k <= total; k++)
+                                bool is_private = cMsgReq.is_private();
+                                if (is_private)
                                 {
-                                    send(cliSock[k], buffer2, sizeof(buffer), 0);
+                                    string target_username = cMsgReq.target_username();
+                                    int uid = 1;
+                                    while (user_list[uid] != target_username)
+                                        ++uid;
+                                    if (uid > total) // 找不到用户, 退出
+                                        break;
+                                    HistoryMsgRsp hMsgRsp;
+                                    int x = min(uid, j), y = max(uid, j);
+                                    for (int hMsgId = 0; hMsgId < history_msg[x][y].size(); ++hMsgId)
+                                    {
+                                        ChatMsgRsp cMsgRsp;
+                                        cMsgRsp.ParseFromString(history_msg[x][y][hMsgId]);
+                                        Message *message = hMsgRsp.add_messages();
+                                        message->set_sender(cMsgRsp.mutable_message().sender());   // 设置 sender 字段
+                                        message->set_content(cMsgRsp.mutable_message().content()); // 设置 content 字段
+                                    }
+                                    string serialized_message;
+                                    hMsgRsp.SerializeToString(&serialized_message);
+                                    send(cliSock[j], serialized_message.c_str(), serialized_message.length(), 0);
                                 }
+                                else
+                                {
+                                    HistoryMsgRsp hMsgRsp;
+                                    for (int hMsgId = 0; hMsgId < history_msg[0][0].size(); ++hMsgId)
+                                    {
+                                        ChatMsgRsp cMsgRsp;
+                                        cMsgRsp.ParseFromString(history_msg[0][0][hMsgId]);
+                                        Message *message = hMsgRsp.add_messages();
+                                        message->set_sender(cMsgRsp.mutable_message().sender());   // 设置 sender 字段
+                                        message->set_content(cMsgRsp.mutable_message().content()); // 设置 content 字段
+                                    }
+                                    string serialized_message;
+                                    hMsgRsp.SerializeToString(&serialized_message);
+                                    send(cliSock[j], serialized_message.c_str(), serialized_message.length(), 0);
+                                }
+                            }
+                            else if (msgtype == 3) // 消息发送-1, 历史消息请求-2, 用户列表请求-3
+                            {
+                                UserListRsp uListRsp;
+                                for (int user_id = 0; user_id < user_list.size(); ++i)
+                                {
+                                    uListRsp.add_user_name(user_list[user_id]);
+                                }
+                                string serialized_message;
+                                uListRsp.SerializeToString(&serialized_message);
+                                send(cliSock[j], serialized_message.c_str(), serialized_message.length(), 0);
                             }
                         }
                     }
