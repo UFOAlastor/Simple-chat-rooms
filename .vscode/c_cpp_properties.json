@@ -3,7 +3,8 @@
         {
             "name": "Win32",
             "includePath": [
-                "${workspaceFolder}/**"
+                "${workspaceFolder}/**",
+                "C:\\Program Files (x86)\\protobuf\\include"
             ],
             "defines": [
                 "_DEBUG",
@@ -17,7 +18,7 @@
             "intelliSenseMode": "windows-msvc-x64",
             "browse": {
                 "path": [
-                    "C:\\CODE\\protobuf-3.20.3\\src"
+                    "C:\\Program Files (x86)\\protobuf\\include"
                 ]
             }
         }

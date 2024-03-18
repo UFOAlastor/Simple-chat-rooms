@@ -10,7 +10,8 @@
                 "${file}",
                 "-o",
                 "${fileDirname}\\${fileBasenameNoExtension}.exe",
-                "-lws2_32"
+                "-lws2_32",
+                "-I", "C:\\CODE\\protobuf-3.20.3\\src"
             ],
             "options": {
                 "cwd": "${fileDirname}"

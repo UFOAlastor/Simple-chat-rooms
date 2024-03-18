@@ -13,5 +13,5 @@ protoc chatroom.proto --cpp_out=.
 cpp编译指令:
 
 ```bash
-g++ server.cpp chatroom.pb.cc -o server.exe -lprotobuf
+g++ server.cpp chatroom.pb.cc -o server.exe -I"C:\\Program Files (x86)\\protobuf\\include"
 ```

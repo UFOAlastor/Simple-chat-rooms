@@ -76,7 +76,7 @@ DWORD WINAPI servEventThread(LPVOID IpParameter) // 服务器端线程
     // 该线程负责处理服务端和各个客户端发生的事件
     // 将传入的参数初始化
     vector<string> user_list;
-    vector<vector<vector<string>>> history_msg;
+    vector<vector<vector<string> > > history_msg;
     SOCKET servSock = *(SOCKET *)IpParameter; // LPVOID为空指针类型，需要先转成SOCKET类型再引用，即可使用传入的SOCKET
     while (true)
     {
@@ -131,8 +131,8 @@ DWORD WINAPI servEventThread(LPVOID IpParameter) // 服务器端线程
                             int nrecv = recv(cliSock[nextIndex], buffer, sizeof(buffer), 0);
                             if (nrecv > 0)
                             {
-                                InitConnectReq iconnectReq;
-                                string receivedData(buffer, nrecv);
+                                CHATROOM::InitConnectReq iconnectReq;
+                                string receivedData = string(buffer);
                                 iconnectReq.ParseFromString(receivedData);
                                 user_list[nextIndex] = string(iconnectReq.sender()).substr(0, sizeof(iconnectReq.sender()) - 2);
                                 cout << "#" << nextIndex << "用户" << user_list[nextIndex] << "进入了聊天室，当前连接数：" << total << endl;
@@ -183,19 +183,18 @@ DWORD WINAPI servEventThread(LPVOID IpParameter) // 服务器端线程
                         int nrecv = recv(cliSock[j], buffer, sizeof(buffer), 0); // nrecv是接收到的字节数
                         if (nrecv > 0)                                           // 如果接收到的字符数大于0
                         {
-                            string receivedData(buffer, nrecv);
+                            string receivedData = string(buffer);
                             // 在服务端显示
-                            ChatMsgReq cMsgReq; // Rsp是服务端返回内容的类
+                            CHATROOM::ChatMsgReq cMsgReq; // Rsp是服务端返回内容的类
                             cMsgReq.ParseFromString(receivedData);
-                            cout << cMsgReq << endl;
                             int msgtype = cMsgReq.msg_type();
                             if (msgtype == 1) // 消息发送-1, 历史消息请求-2, 用户列表请求-3
                             {
                                 bool is_private = cMsgReq.is_private();
-                                const Message &message = cMsgReq.message();
+                                const CHATROOM::Message &message = cMsgReq.message();
                                 string msgcontent = message.content();
                                 // 设置回复内容
-                                ChatMsgRsp cMsgRsp;
+                                CHATROOM::ChatMsgRsp cMsgRsp;
                                 cMsgRsp.mutable_message()->set_sender(user_list[j]);
                                 cMsgRsp.mutable_message()->set_content(msgcontent);
                                 string serialized_message;
@@ -236,15 +235,15 @@ DWORD WINAPI servEventThread(LPVOID IpParameter) // 服务器端线程
                                         ++uid;
                                     if (uid > total) // 找不到用户, 退出
                                         break;
-                                    HistoryMsgRsp hMsgRsp;
+                                    CHATROOM::HistoryMsgRsp hMsgRsp;
                                     int x = min(uid, j), y = max(uid, j);
                                     for (int hMsgId = 0; hMsgId < history_msg[x][y].size(); ++hMsgId)
                                     {
-                                        ChatMsgRsp cMsgRsp;
+                                        CHATROOM::ChatMsgRsp cMsgRsp;
                                         cMsgRsp.ParseFromString(history_msg[x][y][hMsgId]);
-                                        Message *message = hMsgRsp.add_messages();
-                                        message->set_sender(cMsgRsp.mutable_message().sender());   // 设置 sender 字段
-                                        message->set_content(cMsgRsp.mutable_message().content()); // 设置 content 字段
+                                        CHATROOM::Message *message = hMsgRsp.add_messages();
+                                        message->set_sender(cMsgRsp.mutable_message()->sender());   // 设置 sender 字段
+                                        message->set_content(cMsgRsp.mutable_message()->content()); // 设置 content 字段
                                     }
                                     string serialized_message;
                                     hMsgRsp.SerializeToString(&serialized_message);
@@ -252,14 +251,14 @@ DWORD WINAPI servEventThread(LPVOID IpParameter) // 服务器端线程
                                 }
                                 else
                                 {
-                                    HistoryMsgRsp hMsgRsp;
+                                    CHATROOM::HistoryMsgRsp hMsgRsp;
                                     for (int hMsgId = 0; hMsgId < history_msg[0][0].size(); ++hMsgId)
                                     {
-                                        ChatMsgRsp cMsgRsp;
+                                        CHATROOM::ChatMsgRsp cMsgRsp;
                                         cMsgRsp.ParseFromString(history_msg[0][0][hMsgId]);
-                                        Message *message = hMsgRsp.add_messages();
-                                        message->set_sender(cMsgRsp.mutable_message().sender());   // 设置 sender 字段
-                                        message->set_content(cMsgRsp.mutable_message().content()); // 设置 content 字段
+                                        CHATROOM::Message *message = hMsgRsp.add_messages();
+                                        message->set_sender(cMsgRsp.mutable_message()->sender());   // 设置 sender 字段
+                                        message->set_content(cMsgRsp.mutable_message()->content()); // 设置 content 字段
                                     }
                                     string serialized_message;
                                     hMsgRsp.SerializeToString(&serialized_message);
@@ -268,7 +267,7 @@ DWORD WINAPI servEventThread(LPVOID IpParameter) // 服务器端线程
                             }
                             else if (msgtype == 3) // 消息发送-1, 历史消息请求-2, 用户列表请求-3
                             {
-                                UserListRsp uListRsp;
+                                CHATROOM::UserListRsp uListRsp;
                                 for (int user_id = 0; user_id < user_list.size(); ++i)
                                 {
                                     uListRsp.add_user_name(user_list[user_id]);

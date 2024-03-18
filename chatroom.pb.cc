@@ -22,9 +22,10 @@ namespace _pbi = _pb::internal;
 
 namespace CHATROOM {
 PROTOBUF_CONSTEXPR Message::Message(
-    ::_pbi::ConstantInitialized)
-  : sender_(&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{})
-  , content_(&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}){}
+    ::_pbi::ConstantInitialized): _impl_{
+    /*decltype(_impl_.sender_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
+  , /*decltype(_impl_.content_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
+  , /*decltype(_impl_._cached_size_)*/{}} {}
 struct MessageDefaultTypeInternal {
   PROTOBUF_CONSTEXPR MessageDefaultTypeInternal()
       : _instance(::_pbi::ConstantInitialized{}) {}
@@ -35,8 +36,9 @@ struct MessageDefaultTypeInternal {
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 MessageDefaultTypeInternal _Message_default_instance_;
 PROTOBUF_CONSTEXPR HistoryMsgRsp::HistoryMsgRsp(
-    ::_pbi::ConstantInitialized)
-  : messages_(){}
+    ::_pbi::ConstantInitialized): _impl_{
+    /*decltype(_impl_.messages_)*/{}
+  , /*decltype(_impl_._cached_size_)*/{}} {}
 struct HistoryMsgRspDefaultTypeInternal {
   PROTOBUF_CONSTEXPR HistoryMsgRspDefaultTypeInternal()
       : _instance(::_pbi::ConstantInitialized{}) {}
@@ -47,8 +49,9 @@ struct HistoryMsgRspDefaultTypeInternal {
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 HistoryMsgRspDefaultTypeInternal _HistoryMsgRsp_default_instance_;
 PROTOBUF_CONSTEXPR UserListRsp::UserListRsp(
-    ::_pbi::ConstantInitialized)
-  : user_name_(){}
+    ::_pbi::ConstantInitialized): _impl_{
+    /*decltype(_impl_.user_name_)*/{}
+  , /*decltype(_impl_._cached_size_)*/{}} {}
 struct UserListRspDefaultTypeInternal {
   PROTOBUF_CONSTEXPR UserListRspDefaultTypeInternal()
       : _instance(::_pbi::ConstantInitialized{}) {}
@@ -59,11 +62,12 @@ struct UserListRspDefaultTypeInternal {
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 UserListRspDefaultTypeInternal _UserListRsp_default_instance_;
 PROTOBUF_CONSTEXPR ChatMsgReq::ChatMsgReq(
-    ::_pbi::ConstantInitialized)
-  : target_username_(&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{})
-  , message_(nullptr)
-  , msg_type_(0u)
-  , is_private_(false){}
+    ::_pbi::ConstantInitialized): _impl_{
+    /*decltype(_impl_.target_username_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
+  , /*decltype(_impl_.message_)*/nullptr
+  , /*decltype(_impl_.msg_type_)*/0u
+  , /*decltype(_impl_.is_private_)*/false
+  , /*decltype(_impl_._cached_size_)*/{}} {}
 struct ChatMsgReqDefaultTypeInternal {
   PROTOBUF_CONSTEXPR ChatMsgReqDefaultTypeInternal()
       : _instance(::_pbi::ConstantInitialized{}) {}
@@ -74,8 +78,9 @@ struct ChatMsgReqDefaultTypeInternal {
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 ChatMsgReqDefaultTypeInternal _ChatMsgReq_default_instance_;
 PROTOBUF_CONSTEXPR ChatMsgRsp::ChatMsgRsp(
-    ::_pbi::ConstantInitialized)
-  : message_(nullptr){}
+    ::_pbi::ConstantInitialized): _impl_{
+    /*decltype(_impl_.message_)*/nullptr
+  , /*decltype(_impl_._cached_size_)*/{}} {}
 struct ChatMsgRspDefaultTypeInternal {
   PROTOBUF_CONSTEXPR ChatMsgRspDefaultTypeInternal()
       : _instance(::_pbi::ConstantInitialized{}) {}
@@ -86,8 +91,9 @@ struct ChatMsgRspDefaultTypeInternal {
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 ChatMsgRspDefaultTypeInternal _ChatMsgRsp_default_instance_;
 PROTOBUF_CONSTEXPR InitConnectReq::InitConnectReq(
-    ::_pbi::ConstantInitialized)
-  : sender_(&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}){}
+    ::_pbi::ConstantInitialized): _impl_{
+    /*decltype(_impl_.sender_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
+  , /*decltype(_impl_._cached_size_)*/{}} {}
 struct InitConnectReqDefaultTypeInternal {
   PROTOBUF_CONSTEXPR InitConnectReqDefaultTypeInternal()
       : _instance(::_pbi::ConstantInitialized{}) {}
@@ -109,46 +115,46 @@ const uint32_t TableStruct_chatroom_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
-  PROTOBUF_FIELD_OFFSET(::CHATROOM::Message, sender_),
-  PROTOBUF_FIELD_OFFSET(::CHATROOM::Message, content_),
+  PROTOBUF_FIELD_OFFSET(::CHATROOM::Message, _impl_.sender_),
+  PROTOBUF_FIELD_OFFSET(::CHATROOM::Message, _impl_.content_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::CHATROOM::HistoryMsgRsp, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
-  PROTOBUF_FIELD_OFFSET(::CHATROOM::HistoryMsgRsp, messages_),
+  PROTOBUF_FIELD_OFFSET(::CHATROOM::HistoryMsgRsp, _impl_.messages_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::CHATROOM::UserListRsp, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
-  PROTOBUF_FIELD_OFFSET(::CHATROOM::UserListRsp, user_name_),
+  PROTOBUF_FIELD_OFFSET(::CHATROOM::UserListRsp, _impl_.user_name_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::CHATROOM::ChatMsgReq, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
-  PROTOBUF_FIELD_OFFSET(::CHATROOM::ChatMsgReq, msg_type_),
-  PROTOBUF_FIELD_OFFSET(::CHATROOM::ChatMsgReq, message_),
-  PROTOBUF_FIELD_OFFSET(::CHATROOM::ChatMsgReq, is_private_),
-  PROTOBUF_FIELD_OFFSET(::CHATROOM::ChatMsgReq, target_username_),
+  PROTOBUF_FIELD_OFFSET(::CHATROOM::ChatMsgReq, _impl_.msg_type_),
+  PROTOBUF_FIELD_OFFSET(::CHATROOM::ChatMsgReq, _impl_.message_),
+  PROTOBUF_FIELD_OFFSET(::CHATROOM::ChatMsgReq, _impl_.is_private_),
+  PROTOBUF_FIELD_OFFSET(::CHATROOM::ChatMsgReq, _impl_.target_username_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::CHATROOM::ChatMsgRsp, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
-  PROTOBUF_FIELD_OFFSET(::CHATROOM::ChatMsgRsp, message_),
+  PROTOBUF_FIELD_OFFSET(::CHATROOM::ChatMsgRsp, _impl_.message_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::CHATROOM::InitConnectReq, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
-  PROTOBUF_FIELD_OFFSET(::CHATROOM::InitConnectReq, sender_),
+  PROTOBUF_FIELD_OFFSET(::CHATROOM::InitConnectReq, _impl_.sender_),
 };
 static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, -1, sizeof(::CHATROOM::Message)},
@@ -206,40 +212,54 @@ class Message::_Internal {
 Message::Message(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                          bool is_message_owned)
   : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
-  SharedCtor();
+  SharedCtor(arena, is_message_owned);
   // @@protoc_insertion_point(arena_constructor:CHATROOM.Message)
 }
 Message::Message(const Message& from)
   : ::PROTOBUF_NAMESPACE_ID::Message() {
+  Message* const _this = this; (void)_this;
+  new (&_impl_) Impl_{
+      decltype(_impl_.sender_){}
+    , decltype(_impl_.content_){}
+    , /*decltype(_impl_._cached_size_)*/{}};
+
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  sender_.InitDefault();
+  _impl_.sender_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-    sender_.Set("", GetArenaForAllocation());
+    _impl_.sender_.Set("", GetArenaForAllocation());
   #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   if (!from._internal_sender().empty()) {
-    sender_.Set(from._internal_sender(), 
-      GetArenaForAllocation());
+    _this->_impl_.sender_.Set(from._internal_sender(), 
+      _this->GetArenaForAllocation());
   }
-  content_.InitDefault();
+  _impl_.content_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-    content_.Set("", GetArenaForAllocation());
+    _impl_.content_.Set("", GetArenaForAllocation());
   #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   if (!from._internal_content().empty()) {
-    content_.Set(from._internal_content(), 
-      GetArenaForAllocation());
+    _this->_impl_.content_.Set(from._internal_content(), 
+      _this->GetArenaForAllocation());
   }
   // @@protoc_insertion_point(copy_constructor:CHATROOM.Message)
 }
 
-inline void Message::SharedCtor() {
-sender_.InitDefault();
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  sender_.Set("", GetArenaForAllocation());
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-content_.InitDefault();
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  content_.Set("", GetArenaForAllocation());
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+inline void Message::SharedCtor(
+    ::_pb::Arena* arena, bool is_message_owned) {
+  (void)arena;
+  (void)is_message_owned;
+  new (&_impl_) Impl_{
+      decltype(_impl_.sender_){}
+    , decltype(_impl_.content_){}
+    , /*decltype(_impl_._cached_size_)*/{}
+  };
+  _impl_.sender_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.sender_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  _impl_.content_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.content_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
 }
 
 Message::~Message() {
@@ -253,12 +273,12 @@ Message::~Message() {
 
 inline void Message::SharedDtor() {
   GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
-  sender_.Destroy();
-  content_.Destroy();
+  _impl_.sender_.Destroy();
+  _impl_.content_.Destroy();
 }
 
 void Message::SetCachedSize(int size) const {
-  _cached_size_.Set(size);
+  _impl_._cached_size_.Set(size);
 }
 
 void Message::Clear() {
@@ -267,8 +287,8 @@ void Message::Clear() {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  sender_.ClearToEmpty();
-  content_.ClearToEmpty();
+  _impl_.sender_.ClearToEmpty();
+  _impl_.content_.ClearToEmpty();
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -377,35 +397,31 @@ size_t Message::ByteSizeLong() const {
         this->_internal_content());
   }
 
-  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
+  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
 }
 
 const ::PROTOBUF_NAMESPACE_ID::Message::ClassData Message::_class_data_ = {
-    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
     Message::MergeImpl
 };
 const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*Message::GetClassData() const { return &_class_data_; }
 
-void Message::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
-                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-  static_cast<Message *>(to)->MergeFrom(
-      static_cast<const Message &>(from));
-}
 
-
-void Message::MergeFrom(const Message& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:CHATROOM.Message)
-  GOOGLE_DCHECK_NE(&from, this);
+void Message::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
+  auto* const _this = static_cast<Message*>(&to_msg);
+  auto& from = static_cast<const Message&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:CHATROOM.Message)
+  GOOGLE_DCHECK_NE(&from, _this);
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
   if (!from._internal_sender().empty()) {
-    _internal_set_sender(from._internal_sender());
+    _this->_internal_set_sender(from._internal_sender());
   }
   if (!from._internal_content().empty()) {
-    _internal_set_content(from._internal_content());
+    _this->_internal_set_content(from._internal_content());
   }
-  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
 
 void Message::CopyFrom(const Message& from) {
@@ -425,12 +441,12 @@ void Message::InternalSwap(Message* other) {
   auto* rhs_arena = other->GetArenaForAllocation();
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
-      &sender_, lhs_arena,
-      &other->sender_, rhs_arena
+      &_impl_.sender_, lhs_arena,
+      &other->_impl_.sender_, rhs_arena
   );
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
-      &content_, lhs_arena,
-      &other->content_, rhs_arena
+      &_impl_.content_, lhs_arena,
+      &other->_impl_.content_, rhs_arena
   );
 }
 
@@ -448,19 +464,29 @@ class HistoryMsgRsp::_Internal {
 
 HistoryMsgRsp::HistoryMsgRsp(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                          bool is_message_owned)
-  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned),
-  messages_(arena) {
-  SharedCtor();
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor(arena, is_message_owned);
   // @@protoc_insertion_point(arena_constructor:CHATROOM.HistoryMsgRsp)
 }
 HistoryMsgRsp::HistoryMsgRsp(const HistoryMsgRsp& from)
-  : ::PROTOBUF_NAMESPACE_ID::Message(),
-      messages_(from.messages_) {
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  HistoryMsgRsp* const _this = this; (void)_this;
+  new (&_impl_) Impl_{
+      decltype(_impl_.messages_){from._impl_.messages_}
+    , /*decltype(_impl_._cached_size_)*/{}};
+
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   // @@protoc_insertion_point(copy_constructor:CHATROOM.HistoryMsgRsp)
 }
 
-inline void HistoryMsgRsp::SharedCtor() {
+inline void HistoryMsgRsp::SharedCtor(
+    ::_pb::Arena* arena, bool is_message_owned) {
+  (void)arena;
+  (void)is_message_owned;
+  new (&_impl_) Impl_{
+      decltype(_impl_.messages_){arena}
+    , /*decltype(_impl_._cached_size_)*/{}
+  };
 }
 
 HistoryMsgRsp::~HistoryMsgRsp() {
@@ -474,10 +500,11 @@ HistoryMsgRsp::~HistoryMsgRsp() {
 
 inline void HistoryMsgRsp::SharedDtor() {
   GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  _impl_.messages_.~RepeatedPtrField();
 }
 
 void HistoryMsgRsp::SetCachedSize(int size) const {
-  _cached_size_.Set(size);
+  _impl_._cached_size_.Set(size);
 }
 
 void HistoryMsgRsp::Clear() {
@@ -486,7 +513,7 @@ void HistoryMsgRsp::Clear() {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  messages_.Clear();
+  _impl_.messages_.Clear();
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -564,35 +591,31 @@ size_t HistoryMsgRsp::ByteSizeLong() const {
 
   // repeated .CHATROOM.Message messages = 1;
   total_size += 1UL * this->_internal_messages_size();
-  for (const auto& msg : this->messages_) {
+  for (const auto& msg : this->_impl_.messages_) {
     total_size +=
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(msg);
   }
 
-  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
+  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
 }
 
 const ::PROTOBUF_NAMESPACE_ID::Message::ClassData HistoryMsgRsp::_class_data_ = {
-    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
     HistoryMsgRsp::MergeImpl
 };
 const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*HistoryMsgRsp::GetClassData() const { return &_class_data_; }
 
-void HistoryMsgRsp::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
-                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-  static_cast<HistoryMsgRsp *>(to)->MergeFrom(
-      static_cast<const HistoryMsgRsp &>(from));
-}
 
-
-void HistoryMsgRsp::MergeFrom(const HistoryMsgRsp& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:CHATROOM.HistoryMsgRsp)
-  GOOGLE_DCHECK_NE(&from, this);
+void HistoryMsgRsp::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
+  auto* const _this = static_cast<HistoryMsgRsp*>(&to_msg);
+  auto& from = static_cast<const HistoryMsgRsp&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:CHATROOM.HistoryMsgRsp)
+  GOOGLE_DCHECK_NE(&from, _this);
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
-  messages_.MergeFrom(from.messages_);
-  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  _this->_impl_.messages_.MergeFrom(from._impl_.messages_);
+  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
 
 void HistoryMsgRsp::CopyFrom(const HistoryMsgRsp& from) {
@@ -609,7 +632,7 @@ bool HistoryMsgRsp::IsInitialized() const {
 void HistoryMsgRsp::InternalSwap(HistoryMsgRsp* other) {
   using std::swap;
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
-  messages_.InternalSwap(&other->messages_);
+  _impl_.messages_.InternalSwap(&other->_impl_.messages_);
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata HistoryMsgRsp::GetMetadata() const {
@@ -626,19 +649,29 @@ class UserListRsp::_Internal {
 
 UserListRsp::UserListRsp(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                          bool is_message_owned)
-  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned),
-  user_name_(arena) {
-  SharedCtor();
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor(arena, is_message_owned);
   // @@protoc_insertion_point(arena_constructor:CHATROOM.UserListRsp)
 }
 UserListRsp::UserListRsp(const UserListRsp& from)
-  : ::PROTOBUF_NAMESPACE_ID::Message(),
-      user_name_(from.user_name_) {
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  UserListRsp* const _this = this; (void)_this;
+  new (&_impl_) Impl_{
+      decltype(_impl_.user_name_){from._impl_.user_name_}
+    , /*decltype(_impl_._cached_size_)*/{}};
+
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   // @@protoc_insertion_point(copy_constructor:CHATROOM.UserListRsp)
 }
 
-inline void UserListRsp::SharedCtor() {
+inline void UserListRsp::SharedCtor(
+    ::_pb::Arena* arena, bool is_message_owned) {
+  (void)arena;
+  (void)is_message_owned;
+  new (&_impl_) Impl_{
+      decltype(_impl_.user_name_){arena}
+    , /*decltype(_impl_._cached_size_)*/{}
+  };
 }
 
 UserListRsp::~UserListRsp() {
@@ -652,10 +685,11 @@ UserListRsp::~UserListRsp() {
 
 inline void UserListRsp::SharedDtor() {
   GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  _impl_.user_name_.~RepeatedPtrField();
 }
 
 void UserListRsp::SetCachedSize(int size) const {
-  _cached_size_.Set(size);
+  _impl_._cached_size_.Set(size);
 }
 
 void UserListRsp::Clear() {
@@ -664,7 +698,7 @@ void UserListRsp::Clear() {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  user_name_.Clear();
+  _impl_.user_name_.Clear();
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -746,36 +780,32 @@ size_t UserListRsp::ByteSizeLong() const {
 
   // repeated string user_name = 1;
   total_size += 1 *
-      ::PROTOBUF_NAMESPACE_ID::internal::FromIntSize(user_name_.size());
-  for (int i = 0, n = user_name_.size(); i < n; i++) {
+      ::PROTOBUF_NAMESPACE_ID::internal::FromIntSize(_impl_.user_name_.size());
+  for (int i = 0, n = _impl_.user_name_.size(); i < n; i++) {
     total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
-      user_name_.Get(i));
+      _impl_.user_name_.Get(i));
   }
 
-  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
+  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
 }
 
 const ::PROTOBUF_NAMESPACE_ID::Message::ClassData UserListRsp::_class_data_ = {
-    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
     UserListRsp::MergeImpl
 };
 const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*UserListRsp::GetClassData() const { return &_class_data_; }
 
-void UserListRsp::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
-                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-  static_cast<UserListRsp *>(to)->MergeFrom(
-      static_cast<const UserListRsp &>(from));
-}
 
-
-void UserListRsp::MergeFrom(const UserListRsp& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:CHATROOM.UserListRsp)
-  GOOGLE_DCHECK_NE(&from, this);
+void UserListRsp::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
+  auto* const _this = static_cast<UserListRsp*>(&to_msg);
+  auto& from = static_cast<const UserListRsp&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:CHATROOM.UserListRsp)
+  GOOGLE_DCHECK_NE(&from, _this);
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
-  user_name_.MergeFrom(from.user_name_);
-  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  _this->_impl_.user_name_.MergeFrom(from._impl_.user_name_);
+  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
 
 void UserListRsp::CopyFrom(const UserListRsp& from) {
@@ -792,7 +822,7 @@ bool UserListRsp::IsInitialized() const {
 void UserListRsp::InternalSwap(UserListRsp* other) {
   using std::swap;
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
-  user_name_.InternalSwap(&other->user_name_);
+  _impl_.user_name_.InternalSwap(&other->_impl_.user_name_);
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata UserListRsp::GetMetadata() const {
@@ -810,45 +840,57 @@ class ChatMsgReq::_Internal {
 
 const ::CHATROOM::Message&
 ChatMsgReq::_Internal::message(const ChatMsgReq* msg) {
-  return *msg->message_;
+  return *msg->_impl_.message_;
 }
 ChatMsgReq::ChatMsgReq(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                          bool is_message_owned)
   : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
-  SharedCtor();
+  SharedCtor(arena, is_message_owned);
   // @@protoc_insertion_point(arena_constructor:CHATROOM.ChatMsgReq)
 }
 ChatMsgReq::ChatMsgReq(const ChatMsgReq& from)
   : ::PROTOBUF_NAMESPACE_ID::Message() {
+  ChatMsgReq* const _this = this; (void)_this;
+  new (&_impl_) Impl_{
+      decltype(_impl_.target_username_){}
+    , decltype(_impl_.message_){nullptr}
+    , decltype(_impl_.msg_type_){}
+    , decltype(_impl_.is_private_){}
+    , /*decltype(_impl_._cached_size_)*/{}};
+
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  target_username_.InitDefault();
+  _impl_.target_username_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-    target_username_.Set("", GetArenaForAllocation());
+    _impl_.target_username_.Set("", GetArenaForAllocation());
   #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   if (!from._internal_target_username().empty()) {
-    target_username_.Set(from._internal_target_username(), 
-      GetArenaForAllocation());
+    _this->_impl_.target_username_.Set(from._internal_target_username(), 
+      _this->GetArenaForAllocation());
   }
   if (from._internal_has_message()) {
-    message_ = new ::CHATROOM::Message(*from.message_);
-  } else {
-    message_ = nullptr;
+    _this->_impl_.message_ = new ::CHATROOM::Message(*from._impl_.message_);
   }
-  ::memcpy(&msg_type_, &from.msg_type_,
-    static_cast<size_t>(reinterpret_cast<char*>(&is_private_) -
-    reinterpret_cast<char*>(&msg_type_)) + sizeof(is_private_));
+  ::memcpy(&_impl_.msg_type_, &from._impl_.msg_type_,
+    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.is_private_) -
+    reinterpret_cast<char*>(&_impl_.msg_type_)) + sizeof(_impl_.is_private_));
   // @@protoc_insertion_point(copy_constructor:CHATROOM.ChatMsgReq)
 }
 
-inline void ChatMsgReq::SharedCtor() {
-target_username_.InitDefault();
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  target_username_.Set("", GetArenaForAllocation());
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-::memset(reinterpret_cast<char*>(this) + static_cast<size_t>(
-    reinterpret_cast<char*>(&message_) - reinterpret_cast<char*>(this)),
-    0, static_cast<size_t>(reinterpret_cast<char*>(&is_private_) -
-    reinterpret_cast<char*>(&message_)) + sizeof(is_private_));
+inline void ChatMsgReq::SharedCtor(
+    ::_pb::Arena* arena, bool is_message_owned) {
+  (void)arena;
+  (void)is_message_owned;
+  new (&_impl_) Impl_{
+      decltype(_impl_.target_username_){}
+    , decltype(_impl_.message_){nullptr}
+    , decltype(_impl_.msg_type_){0u}
+    , decltype(_impl_.is_private_){false}
+    , /*decltype(_impl_._cached_size_)*/{}
+  };
+  _impl_.target_username_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.target_username_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
 }
 
 ChatMsgReq::~ChatMsgReq() {
@@ -862,12 +904,12 @@ ChatMsgReq::~ChatMsgReq() {
 
 inline void ChatMsgReq::SharedDtor() {
   GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
-  target_username_.Destroy();
-  if (this != internal_default_instance()) delete message_;
+  _impl_.target_username_.Destroy();
+  if (this != internal_default_instance()) delete _impl_.message_;
 }
 
 void ChatMsgReq::SetCachedSize(int size) const {
-  _cached_size_.Set(size);
+  _impl_._cached_size_.Set(size);
 }
 
 void ChatMsgReq::Clear() {
@@ -876,14 +918,14 @@ void ChatMsgReq::Clear() {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  target_username_.ClearToEmpty();
-  if (GetArenaForAllocation() == nullptr && message_ != nullptr) {
-    delete message_;
+  _impl_.target_username_.ClearToEmpty();
+  if (GetArenaForAllocation() == nullptr && _impl_.message_ != nullptr) {
+    delete _impl_.message_;
   }
-  message_ = nullptr;
-  ::memset(&msg_type_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&is_private_) -
-      reinterpret_cast<char*>(&msg_type_)) + sizeof(is_private_));
+  _impl_.message_ = nullptr;
+  ::memset(&_impl_.msg_type_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&_impl_.is_private_) -
+      reinterpret_cast<char*>(&_impl_.msg_type_)) + sizeof(_impl_.is_private_));
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -896,7 +938,7 @@ const char* ChatMsgReq::_InternalParse(const char* ptr, ::_pbi::ParseContext* ct
       // uint32 msg_type = 1;
       case 1:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
-          msg_type_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          _impl_.msg_type_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
@@ -912,7 +954,7 @@ const char* ChatMsgReq::_InternalParse(const char* ptr, ::_pbi::ParseContext* ct
       // bool is_private = 3;
       case 3:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 24)) {
-          is_private_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          _impl_.is_private_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
@@ -1012,7 +1054,7 @@ size_t ChatMsgReq::ByteSizeLong() const {
   if (this->_internal_has_message()) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
-        *message_);
+        *_impl_.message_);
   }
 
   // uint32 msg_type = 1;
@@ -1025,41 +1067,38 @@ size_t ChatMsgReq::ByteSizeLong() const {
     total_size += 1 + 1;
   }
 
-  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
+  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
 }
 
 const ::PROTOBUF_NAMESPACE_ID::Message::ClassData ChatMsgReq::_class_data_ = {
-    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
     ChatMsgReq::MergeImpl
 };
 const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*ChatMsgReq::GetClassData() const { return &_class_data_; }
 
-void ChatMsgReq::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
-                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-  static_cast<ChatMsgReq *>(to)->MergeFrom(
-      static_cast<const ChatMsgReq &>(from));
-}
 
-
-void ChatMsgReq::MergeFrom(const ChatMsgReq& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:CHATROOM.ChatMsgReq)
-  GOOGLE_DCHECK_NE(&from, this);
+void ChatMsgReq::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
+  auto* const _this = static_cast<ChatMsgReq*>(&to_msg);
+  auto& from = static_cast<const ChatMsgReq&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:CHATROOM.ChatMsgReq)
+  GOOGLE_DCHECK_NE(&from, _this);
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
   if (!from._internal_target_username().empty()) {
-    _internal_set_target_username(from._internal_target_username());
+    _this->_internal_set_target_username(from._internal_target_username());
   }
   if (from._internal_has_message()) {
-    _internal_mutable_message()->::CHATROOM::Message::MergeFrom(from._internal_message());
+    _this->_internal_mutable_message()->::CHATROOM::Message::MergeFrom(
+        from._internal_message());
   }
   if (from._internal_msg_type() != 0) {
-    _internal_set_msg_type(from._internal_msg_type());
+    _this->_internal_set_msg_type(from._internal_msg_type());
   }
   if (from._internal_is_private() != 0) {
-    _internal_set_is_private(from._internal_is_private());
+    _this->_internal_set_is_private(from._internal_is_private());
   }
-  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
 
 void ChatMsgReq::CopyFrom(const ChatMsgReq& from) {
@@ -1079,15 +1118,15 @@ void ChatMsgReq::InternalSwap(ChatMsgReq* other) {
   auto* rhs_arena = other->GetArenaForAllocation();
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
-      &target_username_, lhs_arena,
-      &other->target_username_, rhs_arena
+      &_impl_.target_username_, lhs_arena,
+      &other->_impl_.target_username_, rhs_arena
   );
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(ChatMsgReq, is_private_)
-      + sizeof(ChatMsgReq::is_private_)
-      - PROTOBUF_FIELD_OFFSET(ChatMsgReq, message_)>(
-          reinterpret_cast<char*>(&message_),
-          reinterpret_cast<char*>(&other->message_));
+      PROTOBUF_FIELD_OFFSET(ChatMsgReq, _impl_.is_private_)
+      + sizeof(ChatMsgReq::_impl_.is_private_)
+      - PROTOBUF_FIELD_OFFSET(ChatMsgReq, _impl_.message_)>(
+          reinterpret_cast<char*>(&_impl_.message_),
+          reinterpret_cast<char*>(&other->_impl_.message_));
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata ChatMsgReq::GetMetadata() const {
@@ -1105,27 +1144,36 @@ class ChatMsgRsp::_Internal {
 
 const ::CHATROOM::Message&
 ChatMsgRsp::_Internal::message(const ChatMsgRsp* msg) {
-  return *msg->message_;
+  return *msg->_impl_.message_;
 }
 ChatMsgRsp::ChatMsgRsp(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                          bool is_message_owned)
   : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
-  SharedCtor();
+  SharedCtor(arena, is_message_owned);
   // @@protoc_insertion_point(arena_constructor:CHATROOM.ChatMsgRsp)
 }
 ChatMsgRsp::ChatMsgRsp(const ChatMsgRsp& from)
   : ::PROTOBUF_NAMESPACE_ID::Message() {
+  ChatMsgRsp* const _this = this; (void)_this;
+  new (&_impl_) Impl_{
+      decltype(_impl_.message_){nullptr}
+    , /*decltype(_impl_._cached_size_)*/{}};
+
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   if (from._internal_has_message()) {
-    message_ = new ::CHATROOM::Message(*from.message_);
-  } else {
-    message_ = nullptr;
+    _this->_impl_.message_ = new ::CHATROOM::Message(*from._impl_.message_);
   }
   // @@protoc_insertion_point(copy_constructor:CHATROOM.ChatMsgRsp)
 }
 
-inline void ChatMsgRsp::SharedCtor() {
-message_ = nullptr;
+inline void ChatMsgRsp::SharedCtor(
+    ::_pb::Arena* arena, bool is_message_owned) {
+  (void)arena;
+  (void)is_message_owned;
+  new (&_impl_) Impl_{
+      decltype(_impl_.message_){nullptr}
+    , /*decltype(_impl_._cached_size_)*/{}
+  };
 }
 
 ChatMsgRsp::~ChatMsgRsp() {
@@ -1139,11 +1187,11 @@ ChatMsgRsp::~ChatMsgRsp() {
 
 inline void ChatMsgRsp::SharedDtor() {
   GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
-  if (this != internal_default_instance()) delete message_;
+  if (this != internal_default_instance()) delete _impl_.message_;
 }
 
 void ChatMsgRsp::SetCachedSize(int size) const {
-  _cached_size_.Set(size);
+  _impl_._cached_size_.Set(size);
 }
 
 void ChatMsgRsp::Clear() {
@@ -1152,10 +1200,10 @@ void ChatMsgRsp::Clear() {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  if (GetArenaForAllocation() == nullptr && message_ != nullptr) {
-    delete message_;
+  if (GetArenaForAllocation() == nullptr && _impl_.message_ != nullptr) {
+    delete _impl_.message_;
   }
-  message_ = nullptr;
+  _impl_.message_ = nullptr;
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -1229,35 +1277,32 @@ size_t ChatMsgRsp::ByteSizeLong() const {
   if (this->_internal_has_message()) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
-        *message_);
+        *_impl_.message_);
   }
 
-  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
+  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
 }
 
 const ::PROTOBUF_NAMESPACE_ID::Message::ClassData ChatMsgRsp::_class_data_ = {
-    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
     ChatMsgRsp::MergeImpl
 };
 const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*ChatMsgRsp::GetClassData() const { return &_class_data_; }
 
-void ChatMsgRsp::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
-                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-  static_cast<ChatMsgRsp *>(to)->MergeFrom(
-      static_cast<const ChatMsgRsp &>(from));
-}
 
-
-void ChatMsgRsp::MergeFrom(const ChatMsgRsp& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:CHATROOM.ChatMsgRsp)
-  GOOGLE_DCHECK_NE(&from, this);
+void ChatMsgRsp::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
+  auto* const _this = static_cast<ChatMsgRsp*>(&to_msg);
+  auto& from = static_cast<const ChatMsgRsp&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:CHATROOM.ChatMsgRsp)
+  GOOGLE_DCHECK_NE(&from, _this);
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
   if (from._internal_has_message()) {
-    _internal_mutable_message()->::CHATROOM::Message::MergeFrom(from._internal_message());
+    _this->_internal_mutable_message()->::CHATROOM::Message::MergeFrom(
+        from._internal_message());
   }
-  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
 
 void ChatMsgRsp::CopyFrom(const ChatMsgRsp& from) {
@@ -1274,7 +1319,7 @@ bool ChatMsgRsp::IsInitialized() const {
 void ChatMsgRsp::InternalSwap(ChatMsgRsp* other) {
   using std::swap;
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
-  swap(message_, other->message_);
+  swap(_impl_.message_, other->_impl_.message_);
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata ChatMsgRsp::GetMetadata() const {
@@ -1292,28 +1337,40 @@ class InitConnectReq::_Internal {
 InitConnectReq::InitConnectReq(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                          bool is_message_owned)
   : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
-  SharedCtor();
+  SharedCtor(arena, is_message_owned);
   // @@protoc_insertion_point(arena_constructor:CHATROOM.InitConnectReq)
 }
 InitConnectReq::InitConnectReq(const InitConnectReq& from)
   : ::PROTOBUF_NAMESPACE_ID::Message() {
+  InitConnectReq* const _this = this; (void)_this;
+  new (&_impl_) Impl_{
+      decltype(_impl_.sender_){}
+    , /*decltype(_impl_._cached_size_)*/{}};
+
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  sender_.InitDefault();
+  _impl_.sender_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-    sender_.Set("", GetArenaForAllocation());
+    _impl_.sender_.Set("", GetArenaForAllocation());
   #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   if (!from._internal_sender().empty()) {
-    sender_.Set(from._internal_sender(), 
-      GetArenaForAllocation());
+    _this->_impl_.sender_.Set(from._internal_sender(), 
+      _this->GetArenaForAllocation());
   }
   // @@protoc_insertion_point(copy_constructor:CHATROOM.InitConnectReq)
 }
 
-inline void InitConnectReq::SharedCtor() {
-sender_.InitDefault();
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  sender_.Set("", GetArenaForAllocation());
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+inline void InitConnectReq::SharedCtor(
+    ::_pb::Arena* arena, bool is_message_owned) {
+  (void)arena;
+  (void)is_message_owned;
+  new (&_impl_) Impl_{
+      decltype(_impl_.sender_){}
+    , /*decltype(_impl_._cached_size_)*/{}
+  };
+  _impl_.sender_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.sender_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
 }
 
 InitConnectReq::~InitConnectReq() {
@@ -1327,11 +1384,11 @@ InitConnectReq::~InitConnectReq() {
 
 inline void InitConnectReq::SharedDtor() {
   GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
-  sender_.Destroy();
+  _impl_.sender_.Destroy();
 }
 
 void InitConnectReq::SetCachedSize(int size) const {
-  _cached_size_.Set(size);
+  _impl_._cached_size_.Set(size);
 }
 
 void InitConnectReq::Clear() {
@@ -1340,7 +1397,7 @@ void InitConnectReq::Clear() {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  sender_.ClearToEmpty();
+  _impl_.sender_.ClearToEmpty();
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -1422,32 +1479,28 @@ size_t InitConnectReq::ByteSizeLong() const {
         this->_internal_sender());
   }
 
-  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
+  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
 }
 
 const ::PROTOBUF_NAMESPACE_ID::Message::ClassData InitConnectReq::_class_data_ = {
-    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
     InitConnectReq::MergeImpl
 };
 const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*InitConnectReq::GetClassData() const { return &_class_data_; }
 
-void InitConnectReq::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
-                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-  static_cast<InitConnectReq *>(to)->MergeFrom(
-      static_cast<const InitConnectReq &>(from));
-}
 
-
-void InitConnectReq::MergeFrom(const InitConnectReq& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:CHATROOM.InitConnectReq)
-  GOOGLE_DCHECK_NE(&from, this);
+void InitConnectReq::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
+  auto* const _this = static_cast<InitConnectReq*>(&to_msg);
+  auto& from = static_cast<const InitConnectReq&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:CHATROOM.InitConnectReq)
+  GOOGLE_DCHECK_NE(&from, _this);
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
   if (!from._internal_sender().empty()) {
-    _internal_set_sender(from._internal_sender());
+    _this->_internal_set_sender(from._internal_sender());
   }
-  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
 
 void InitConnectReq::CopyFrom(const InitConnectReq& from) {
@@ -1467,8 +1520,8 @@ void InitConnectReq::InternalSwap(InitConnectReq* other) {
   auto* rhs_arena = other->GetArenaForAllocation();
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
-      &sender_, lhs_arena,
-      &other->sender_, rhs_arena
+      &_impl_.sender_, lhs_arena,
+      &other->_impl_.sender_, rhs_arena
   );
 }
 
