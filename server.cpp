@@ -76,7 +76,7 @@ DWORD WINAPI servEventThread(LPVOID IpParameter) // 服务器端线程
     // 该线程负责处理服务端和各个客户端发生的事件
     // 将传入的参数初始化
     vector<string> user_list;
-    vector<vector<vector<string> > > history_msg;
+    vector<vector<vector<string>>> history_msg;
     SOCKET servSock = *(SOCKET *)IpParameter; // LPVOID为空指针类型，需要先转成SOCKET类型再引用，即可使用传入的SOCKET
     while (true)
     {
